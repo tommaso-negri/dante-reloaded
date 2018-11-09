@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 let player
 let platforms
 let cursors
+let map
 
 export default class Level1 extends Phaser.Scene {
   constructor() {
@@ -13,17 +14,24 @@ export default class Level1 extends Phaser.Scene {
     this.load.spritesheet('player', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
     this.load.image('platform', 'assets/platform.png');
     this.load.image('sky', 'assets/sky.png');
+
+    this.load.image('tiles', 'assets/super_mario.png');
+		this.load.tilemapTiledJSON('map', 'assets/maps/Level1Map.json');
   }
 
   create() {
-    this.add.image(0, 0, 'sky').setOrigin(0, 0)
+    this.add.image(0, 0, 'sky').setOrigin(0, 0);
 
-    platforms = this.physics.add.staticGroup();
+    this.map = this.add.tilemap('map');
+    this.map.addTilesetImage('super_mario','tiles');
+    this.backgroundLayer = this.map.createLayer('backgroundLayer');	
 
-    platforms.create(400, 568, 'platform').setScale(2).refreshBody();
-    platforms.create(600, 400, 'platform');
-    platforms.create(50, 250, 'platform');
-    platforms.create(750, 220, 'platform');
+    // platforms = this.physics.add.staticGroup();
+
+    // platforms.create(400, 568, 'platform').setScale(2).refreshBody();
+    // platforms.create(600, 400, 'platform');
+    // platforms.create(50, 250, 'platform');
+    // platforms.create(750, 220, 'platform');
 
     player = this.physics.add.sprite(80, 196, 'player');
     player.setCollideWorldBounds(true);
