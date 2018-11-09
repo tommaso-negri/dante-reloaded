@@ -1,34 +1,15 @@
-import 'phaser';
+import Phaser from 'phaser';
+import config from './config/config';
+import Level1 from './scenes/Level1'
 
-var config = {
-    type: Phaser.AUTO,
-    parent: 'phaser-example',
-    width: 800,
-    height: 600,
-    scene: {
-        preload: preload,
-        create: create
-    }
-};
-
-var game = new Phaser.Game(config);
-
-function preload ()
-{
-    this.load.image('logo', 'assets/logo.png');
+class Game extends Phaser.Game {
+  constructor() {
+    super(config);
+    this.scene.add('Level1', Level1);
+    this.scene.start('Level1')
+  }
 }
 
-function create ()
-{
-    var logo = this.add.image(400, 150, 'logo');
-
-    this.tweens.add({
-        targets: logo,
-        y: 450,
-        duration: 2000,
-        ease: 'Power2',
-        yoyo: true,
-        loop: -1
-    });
-
+window.onload = function() {
+  window.game = new Game();
 }
