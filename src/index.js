@@ -1,12 +1,15 @@
-import Phaser from 'phaser';
+import PIXI from 'expose-loader?PIXI!phaser-ce/build/custom/pixi.js';
+import p2 from 'expose-loader?p2!phaser-ce/build/custom/p2.js';
+import Phaser from 'expose-loader?Phaser!phaser-ce/build/custom/phaser-split.js';
+
 import config from './config/config';
-import Level1 from './scenes/Level1'
+import Level1 from './states/Level1';
 
 class Game extends Phaser.Game {
   constructor() {
     super(config);
-    this.scene.add('Level1', Level1);
-    this.scene.start('Level1')
+    this.state.add('Level1', Level1);
+    this.state.start('Level1')
   }
 }
 
