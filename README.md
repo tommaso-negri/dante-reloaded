@@ -53,7 +53,7 @@ Con il comando ```yarn start``` si avvierà il server di sviluppo con funzioni d
 
 **N.B:** il terminale fintanto che il server è in funzione dovrà restare aperto.
 
-Per terminare l'esecuzione del server si può sul terminale la combinazione di tasti
+Per terminare l'esecuzione del server si può usare sul terminale la combinazione di tasti
 
 ```ctrl + c```
 
