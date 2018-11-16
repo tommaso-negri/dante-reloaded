@@ -1,8 +1,10 @@
 export default {
-  type: Phaser.AUTO,
+  type: Phaser.GRAPHICS,
   parent: '',
   width: 1024,
   height: 768
+  // width: window.innerWidth * window.devicePixelRatio,
+  // height: window.innerHeight * window.devicePixelRatio
   // physics: {
   //   default: 'arcade',
   //   arcade: {
