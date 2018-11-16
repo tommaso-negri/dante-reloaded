@@ -1,4 +1,4 @@
-import Phaser from 'phaser-ce';
+import Phaser, { Weapon, Bullet } from 'phaser-ce';
 
 let map;
 let layer;
@@ -16,6 +16,7 @@ let parallax5;
 let parallax6;
 let parallax7;
 let jump;
+let weapon;
 
 export default class Level1 extends Phaser.State {
   constructor() {
@@ -26,6 +27,7 @@ export default class Level1 extends Phaser.State {
     game.load.tilemap('Level1Map', 'assets/tilemaps/level1/Level1Map.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('tiles', 'assets/tilemaps/level1/Tiles_32x32.png');
     game.load.image('dude', 'assets/sprites/phaser-dude.png');
+    game.load.image('bomba', 'assets/images/diamond.png');
 
 
     game.load.image('1', 'assets/images/1.png');
@@ -83,14 +85,21 @@ export default class Level1 extends Phaser.State {
 
     game.camera.follow(player);
 
+
     cursors = game.input.keyboard.createCursorKeys();
+
+    //weapon bomba
+    weapon = game.add.weapon(3, 'bomba');
+    weapon.trackSprite(player, 16,32);
+    weapon.bullets.setAll("width",32);
+    weapon.bullets.setAll("height", 28);
+    weapon.fireAngle = 0;
+    weapon.bulletGravity = 0;
+    weapon.bulletSpeed = 0;
+ 
   }
 
   update() {
-    //parallax
-
-
-
 
     if (cursors.left.isDown) {
     //stop moving parallax when player is blocked
@@ -106,22 +115,23 @@ export default class Level1 extends Phaser.State {
 
 
     } else if (cursors.right.isDown) {
-    //stop moving parallax when player is blocked
-    if (playerOldPos.x != player.body.x) {
-    parallax1.tilePosition.x -= 0.1;
-    parallax2.tilePosition.x -= 0.8;
-    parallax3.tilePosition.x -= 1.2;
-    parallax4.tilePosition.x -= 1.6;
-    parallax5.tilePosition.x -= 2;
-    parallax6.tilePosition.x -= 2.4;
-    parallax7.tilePosition.x -= 5;
+      //stop moving parallax when player is blocked
+      if (playerOldPos.x != player.body.x) {
+      parallax1.tilePosition.x -= 0.1;
+      parallax2.tilePosition.x -= 0.8;
+      parallax3.tilePosition.x -= 1.2;
+      parallax4.tilePosition.x -= 1.6;
+      parallax5.tilePosition.x -= 2;
+      parallax6.tilePosition.x -= 2.4;
+      parallax7.tilePosition.x -= 5;
+      }
     }
-  }
 
 
 
 
     game.physics.arcade.collide(player, layer);
+    game.physics.arcade.collide(weapon.bullets, layer);
 
     player.body.velocity.x = 0;
 
@@ -134,16 +144,30 @@ export default class Level1 extends Phaser.State {
         player.body.velocity.x = 150;
     }
 
+    if (cursors.down.isDown) {
+      // bomba();
+      weapon.fire();
+    }
+
    game.input.keyboard.onUpCallback = function( e ){
       if(e.keyCode == Phaser.Keyboard.UP && jump==0){
       player.body.velocity.y = -150;
       jump=1;
-      
       }
+
       if (e.keyCode == Phaser.Keyboard.UP && jump==1 && player.body.onFloor()) {
       player.body.velocity.y = -200;
       jump=0;
       }
     };
+
+    
   }
+  
 }
+// function bomba() {
+//   weapon.fire();
+//     game.time.events.add(Phaser.Timer.SECOND * 3, function(){
+//       weapon.bullets.kill();
+//     });
+// }
