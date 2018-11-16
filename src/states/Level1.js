@@ -9,6 +9,7 @@ export default class Level1 extends Phaser.State {
 
   preload() {
     game.load.image('logo', './assets/images/phaser.png');
+    let jump;
   }
 
   create() {
