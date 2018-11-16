@@ -76,7 +76,7 @@ export default class Level1 extends Phaser.State {
 
     player.body.collideWorldBounds = true;
 
-    player.body.bounce.y = 0.2;
+    player.body.bounce.y = 0.1;
     player.body.linearDamping = 1;
 
     game.camera.follow(player);
