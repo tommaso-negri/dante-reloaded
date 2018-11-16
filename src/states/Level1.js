@@ -14,6 +14,7 @@ export default class Level1 extends Phaser.State {
     game.load.tilemap('Level1Map', 'assets/tilemaps/level1/Level1Map.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('tiles', 'assets/tilemaps/level1/Tiles_32x32.png');
     game.load.image('dude', 'assets/sprites/phaser-dude.png');
+    let test;
   }
 
   create() {
