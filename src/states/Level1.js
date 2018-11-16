@@ -1,4 +1,4 @@
-import Phaser from 'phaser-ce';
+import Phaser, { Weapon, Bullet } from 'phaser-ce';
 
 let map;
 let layer;
@@ -9,6 +9,7 @@ let playerOldPos = {
 };
 let jumpControll;
 let commands;
+let weapon;
 let parallax1;
 let parallax2;
 let parallax3;
@@ -26,6 +27,7 @@ export default class Level1 extends Phaser.State {
     game.load.tilemap('Level1Map', 'assets/tilemaps/level1/Level1Map.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('tiles', 'assets/tilemaps/level1/Tiles_32x32.png');
     game.load.image('dude', 'assets/sprites/phaser-dude.png');
+    game.load.image('bomba', 'assets/images/diamond.png');
 
     // PARALLAX BGs
     game.load.image('1', 'assets/images/1.png');
@@ -81,6 +83,17 @@ export default class Level1 extends Phaser.State {
 
     game.camera.follow(player);
 
+    //weapon bomba
+    weapon = game.add.weapon(3, 'bomba');
+    weapon.trackSprite(player, 16,32);
+    weapon.bullets.setAll("width",32);
+    weapon.bullets.setAll("height", 28);
+    weapon.fireAngle = 0;
+    weapon.bulletGravity = 0;
+    weapon.bulletSpeed = 0;
+  }
+
+  update() {
     // PLAYER COMMANDS
     commands = {
       up: game.input.keyboard.addKey(Phaser.Keyboard.W),
@@ -98,6 +111,7 @@ export default class Level1 extends Phaser.State {
 
   update() {
     game.physics.arcade.collide(player, layer);
+    game.physics.arcade.collide(weapon.bullets, layer);
 
     player.body.velocity.x = 0;
 
@@ -138,18 +152,32 @@ export default class Level1 extends Phaser.State {
         parallax7.tilePosition.x -= 5;
       }
     }
-
+    
+    if (commands.cursorsDown.isDown) {
+      // bomba();
+      weapon.fire();
+    }
+    
     // DOUBLE JUMP
     game.input.keyboard.onDownCallback = function(e) {
       if(e.keyCode == Phaser.Keyboard.SPACEBAR && jumpControll==0){
       player.body.velocity.y = -150;
       jumpControll=1;
-      
       }
+      
       if (e.keyCode == Phaser.Keyboard.SPACEBAR && jumpControll==1 && player.body.onFloor()) {
       player.body.velocity.y = -200;
       jumpControll=0;
       }
     };
+
+    
   }
+  
 }
+// function bomba() {
+//   weapon.fire();
+//     game.time.events.add(Phaser.Timer.SECOND * 3, function(){
+//       weapon.bullets.kill();
+//     });
+// }
