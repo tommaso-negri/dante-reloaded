@@ -91,9 +91,7 @@ export default class Level1 extends Phaser.State {
     weapon.fireAngle = 0;
     weapon.bulletGravity = 0;
     weapon.bulletSpeed = 0;
-  }
 
-  update() {
     // PLAYER COMMANDS
     commands = {
       up: game.input.keyboard.addKey(Phaser.Keyboard.W),
@@ -153,7 +151,7 @@ export default class Level1 extends Phaser.State {
       }
     }
     
-    if (commands.cursorsDown.isDown) {
+    if (commands.controlsDown.isDown) {
       // bomba();
       weapon.fire();
     }
