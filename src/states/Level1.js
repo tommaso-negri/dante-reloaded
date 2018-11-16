@@ -15,6 +15,7 @@ let parallax4;
 let parallax5;
 let parallax6;
 let parallax7;
+let jump;
 
 export default class Level1 extends Phaser.State {
   constructor() {
@@ -57,6 +58,7 @@ export default class Level1 extends Phaser.State {
 
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
+    jump=0;
 
     map = game.add.tilemap('Level1Map');
 
@@ -123,14 +125,6 @@ export default class Level1 extends Phaser.State {
 
     player.body.velocity.x = 0;
 
-    if (cursors.up.isDown)
-    {
-        if (player.body.onFloor())
-        {
-            player.body.velocity.y = -200;
-        }
-    }
-
     if (cursors.left.isDown)
     {
         player.body.velocity.x = -150;
@@ -139,5 +133,17 @@ export default class Level1 extends Phaser.State {
     {
         player.body.velocity.x = 150;
     }
+
+   game.input.keyboard.onUpCallback = function( e ){
+      if(e.keyCode == Phaser.Keyboard.UP && jump==0){
+      player.body.velocity.y = -150;
+      jump=1;
+      
+      }
+      if (e.keyCode == Phaser.Keyboard.UP && jump==1 && player.body.onFloor()) {
+      player.body.velocity.y = -200;
+      jump=0;
+      }
+    };
   }
 }
