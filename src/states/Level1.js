@@ -19,8 +19,6 @@ export default class Level1 extends Phaser.State {
   create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    // game.stage.backgroundColor = '#787878';
-
     map = game.add.tilemap('Level1Map');
 
     map.addTilesetImage('Tiles_32x32', 'tiles');
