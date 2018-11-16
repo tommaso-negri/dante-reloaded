@@ -1,4 +1,4 @@
-import Phaser, { Weapon, Bullet } from 'phaser-ce';
+import Phaser from 'phaser-ce';
 
 let map;
 let layer;
