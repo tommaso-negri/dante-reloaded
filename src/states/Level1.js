@@ -4,6 +4,17 @@ let map;
 let layer;
 let player;
 let cursors;
+let playerOldPos = {
+  x: 0,
+  y: 0
+};
+let parallax1;
+let parallax2;
+let parallax3;
+let parallax4;
+let parallax5;
+let parallax6;
+let parallax7;
 let jump;
 
 export default class Level1 extends Phaser.State {
@@ -15,10 +26,37 @@ export default class Level1 extends Phaser.State {
     game.load.tilemap('Level1Map', 'assets/tilemaps/level1/Level1Map.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('tiles', 'assets/tilemaps/level1/Tiles_32x32.png');
     game.load.image('dude', 'assets/sprites/phaser-dude.png');
-    let test;
+
+
+    game.load.image('1', 'assets/images/1.png');
+    game.load.image('2', 'assets/images/2.png');
+    game.load.image('3', 'assets/images/3.png');
+    game.load.image('4', 'assets/images/4.png');
+    game.load.image('5', 'assets/images/5.png');
+    game.load.image('6', 'assets/images/6.png');
+    game.load.image('7', 'assets/images/7.png');
+
   }
 
   create() {
+
+    //parallax
+    parallax1 = this.game.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, "1");
+    parallax2 = this.game.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, "2");
+    parallax3 = this.game.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, "3");
+    parallax4 = this.game.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, "4");
+    parallax5 = this.game.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, "5");
+    parallax6 = this.game.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, "6");
+    parallax7 = this.game.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, "7");
+    parallax1.fixedToCamera =  true;
+    parallax2.fixedToCamera =  true;
+    parallax3.fixedToCamera =  true;
+    parallax4.fixedToCamera =  true;
+    parallax5.fixedToCamera =  true;
+    parallax6.fixedToCamera =  true;
+    parallax7.fixedToCamera =  true;
+
+
     game.physics.startSystem(Phaser.Physics.ARCADE);
     jump=0;
 
@@ -49,6 +87,40 @@ export default class Level1 extends Phaser.State {
   }
 
   update() {
+    //parallax
+
+
+
+
+    if (cursors.left.isDown) {
+    //stop moving parallax when player is blocked
+    if (playerOldPos.x != player.body.x) {
+    parallax1.tilePosition.x += 0.1;
+    parallax2.tilePosition.x += 0.8;
+    parallax3.tilePosition.x += 1.2;
+    parallax4.tilePosition.x += 1.6;
+    parallax5.tilePosition.x += 2;
+    parallax6.tilePosition.x += 2.4;
+    parallax7.tilePosition.x += 5;
+    }
+
+
+    } else if (cursors.right.isDown) {
+    //stop moving parallax when player is blocked
+    if (playerOldPos.x != player.body.x) {
+    parallax1.tilePosition.x -= 0.1;
+    parallax2.tilePosition.x -= 0.8;
+    parallax3.tilePosition.x -= 1.2;
+    parallax4.tilePosition.x -= 1.6;
+    parallax5.tilePosition.x -= 2;
+    parallax6.tilePosition.x -= 2.4;
+    parallax7.tilePosition.x -= 5;
+    }
+  }
+
+
+
+
     game.physics.arcade.collide(player, layer);
 
     player.body.velocity.x = 0;
