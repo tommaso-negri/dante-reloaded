@@ -17,6 +17,8 @@ let parallax4;
 let parallax5;
 let parallax6;
 let parallax7;
+// let music;
+
 
 export default class Level1 extends Phaser.State {
   constructor() {
@@ -28,6 +30,7 @@ export default class Level1 extends Phaser.State {
     game.load.image('tiles', 'assets/tilemaps/level1/Tiles_32x32.png');
     game.load.image('dude', 'assets/sprites/phaser-dude.png');
     game.load.image('bomba', 'assets/images/diamond.png');
+    // this.game.load.audio('music', ['assets/audio/bg_music.mp3']);
 
     // PARALLAX BGs
     game.load.image('1', 'assets/images/1.png');
@@ -59,6 +62,10 @@ export default class Level1 extends Phaser.State {
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
     jumpControll=0;
+    
+    // Audio
+    // music = game.add.audio('music');
+    // music.play();
 
     map = game.add.tilemap('Level1Map');
 
@@ -91,6 +98,8 @@ export default class Level1 extends Phaser.State {
     weapon.fireAngle = 0;
     weapon.bulletGravity = 0;
     weapon.bulletSpeed = 0;
+    weapon.onFire.add(bomba);
+    
 
     // PLAYER COMMANDS
     commands = {
@@ -152,7 +161,6 @@ export default class Level1 extends Phaser.State {
     }
     
     if (commands.controlsDown.isDown) {
-      // bomba();
       weapon.fire();
     }
     
@@ -173,9 +181,9 @@ export default class Level1 extends Phaser.State {
   }
   
 }
-// function bomba() {
-//   weapon.fire();
-//     game.time.events.add(Phaser.Timer.SECOND * 3, function(){
-//       weapon.bullets.kill();
-//     });
-// }
+
+function bomba(bullet, weapon){
+  game.time.events.add(Phaser.Timer.SECOND * 3, function(){
+    bullet.kill();
+  });
+}
