@@ -43,8 +43,10 @@ export default class Level1 extends Phaser.State {
   }
 
   create() {
+    game.time.advancedTiming = true;
+
     // PARALLAX
-    parallax1 = this.game.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, "1");
+    parallax1 = this.game.add.tileSprite(-100, - 100, window.innerWidth, window.innerHeight, "1");
     parallax2 = this.game.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, "2");
     parallax3 = this.game.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, "3");
     parallax4 = this.game.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, "4");
@@ -88,7 +90,11 @@ export default class Level1 extends Phaser.State {
     player.body.bounce.y = 0.1;
     player.body.linearDamping = 1;
 
-    game.camera.follow(player);
+    // game.camera.follow(player);
+    game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
+
+    // game.world.setBounds(0,0, 1920, 1080)
+    game.world.setBounds(0, 0, 1920, 1920);
 
     //weapon bomba
     weapon = game.add.weapon(3, 'bomba');
@@ -176,14 +182,18 @@ export default class Level1 extends Phaser.State {
       jumpControll=0;
       }
     };
-
     
   }
+
+  // render() {
+  //   game.debug.text(player.body.velocity.x, 2, 14, "#00ff00");
+  // }
   
 }
 
 function bomba(bullet, weapon){
   game.time.events.add(Phaser.Timer.SECOND * 3, function(){
     bullet.kill();
+    game.camera.shake(0.01, 300);
   });
 }
