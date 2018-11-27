@@ -17,6 +17,8 @@ let parallax4;
 let parallax5;
 let parallax6;
 let parallax7;
+let checkpoint1_spento;
+let checkpoint1
 // let music;
 
 
@@ -30,6 +32,8 @@ export default class Level1 extends Phaser.State {
     game.load.image('tiles', 'assets/tilemaps/level1/Tiles_32x32.png');
     game.load.image('dude', 'assets/sprites/phaser-dude.png');
     game.load.image('bomba', 'assets/images/diamond.png');
+
+    game.load.spritesheet('checkpoint', 'assets/images/Checkpoint.png', 65, 96);
     // this.game.load.audio('music', ['assets/audio/bg_music.mp3']);
 
     // PARALLAX BGs
@@ -61,10 +65,19 @@ export default class Level1 extends Phaser.State {
     parallax6.fixedToCamera =  true;
     parallax7.fixedToCamera =  true;
 
+    //CHECKPOINT
+
+    checkpoint1 = game.add.sprite(29*32, 17*32,'checkpoint');
+    game.physics.arcade.enable(checkpoint1);
+    checkpoint1.animations.add('spento', [1],10, true);
+    checkpoint1.animations.add('acceso', [0],10, true);
+    checkpoint1_spento = true;
+
+    //
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
     jumpControll=0;
-    
+
     // Audio
     // music = game.add.audio('music');
     // music.play();
@@ -105,7 +118,7 @@ export default class Level1 extends Phaser.State {
     weapon.bulletGravity = 0;
     weapon.bulletSpeed = 0;
     weapon.onFire.add(bomba);
-    
+
 
     // PLAYER COMMANDS
     commands = {
@@ -124,17 +137,67 @@ export default class Level1 extends Phaser.State {
 
   update() {
     game.physics.arcade.collide(player, layer);
+    game.physics.arcade.collide(checkpoint1, layer);
     game.physics.arcade.collide(weapon.bullets, layer);
 
     player.body.velocity.x = 0;
 
     if (commands.left.isDown) {
-      
+
       if (commands.shift.isDown) {
         player.body.velocity.x = -250;
       } else {
         player.body.velocity.x = -150;
       }
+
+      //CHECKPOINT
+
+      //checkpoint function
+
+//
+      // NELL'ENEMY   game.physics.arcade.overlap(enemy, player, function(e,p) {
+        //if(nemico_attivo == true){
+          //p.kill();
+          //player_respawn();   ---->  VA INSERITO QUESTO PER FAR FUNZIONARE IL CHECKPOINT
+        //}
+  //  });
+//
+
+    function player_respawn(){
+      if (player.alive == false && checkpoint1_spento == true){
+        game.time.events.add(Phaser.Timer.SECOND * 0.5, function() {
+        player.reset(12*32,2*32);
+      })
+      }
+      if (player.alive == false && checkpoint1_spento == false){
+        game.time.events.add(Phaser.Timer.SECOND * 0.5, function() {
+        player.reset(25*32,5*32);
+      })
+      }
+
+    }
+
+
+
+    //checkpoint spawn
+
+
+     game.physics.arcade.overlap(player, checkpoint1, function(){
+       checkpoint1_spento = false;
+
+     });
+
+
+    if (checkpoint1_spento == true) {
+      checkpoint1.animations.play('spento');
+    }
+    if (checkpoint1_spento == false) {
+      checkpoint1.animations.play('acceso');
+    }
+
+
+
+
 
       // PARALLAX
       if (playerOldPos.x != player.body.x) {
@@ -147,7 +210,7 @@ export default class Level1 extends Phaser.State {
         parallax7.tilePosition.x += 5;
       }
     } else if (commands.right.isDown) {
-      
+
       if (commands.shift.isDown) {
         player.body.velocity.x = 250;
       } else {
@@ -165,30 +228,30 @@ export default class Level1 extends Phaser.State {
         parallax7.tilePosition.x -= 5;
       }
     }
-    
+
     if (commands.controlsDown.isDown) {
       weapon.fire();
     }
-    
+
     // DOUBLE JUMP
     game.input.keyboard.onDownCallback = function(e) {
       if(e.keyCode == Phaser.Keyboard.SPACEBAR && jumpControll==0){
       player.body.velocity.y = -150;
       jumpControll=1;
       }
-      
+
       if (e.keyCode == Phaser.Keyboard.SPACEBAR && jumpControll==1 && player.body.onFloor()) {
       player.body.velocity.y = -200;
       jumpControll=0;
       }
     };
-    
+
   }
 
   // render() {
   //   game.debug.text(player.body.velocity.x, 2, 14, "#00ff00");
   // }
-  
+
 }
 
 function bomba(bullet, weapon){
@@ -196,4 +259,9 @@ function bomba(bullet, weapon){
     bullet.kill();
     game.camera.shake(0.01, 300);
   });
+
+  if (player.body.velocity.x != 0 || player.body.y != 0) {
+  playerOldPos.x = player.body.x;
+  playerOldPos.y = player.body.y;
+}
 }
