@@ -18,7 +18,9 @@ let parallax5;
 let parallax6;
 let parallax7;
 let checkpoint1_spento;
-let checkpoint1
+let checkpoint1;
+
+let gun;
 // let music;
 
 
@@ -79,7 +81,7 @@ export default class Level1 extends Phaser.State {
     jumpControll=0;
 
     // Audio
-    // music = game.add.audio('music');
+    // music = game.add.audio('music');s
     // music.play();
 
     map = game.add.tilemap('Level1Map');
@@ -111,13 +113,27 @@ export default class Level1 extends Phaser.State {
 
     //weapon bomba
     weapon = game.add.weapon(3, 'bomba');
-    weapon.trackSprite(player, 16,32);
-    weapon.bullets.setAll("width",32);
+    weapon.trackSprite(player, 16, 32);
+    weapon.bullets.setAll("width", 32);
     weapon.bullets.setAll("height", 28);
     weapon.fireAngle = 0;
     weapon.bulletGravity = 0;
     weapon.bulletSpeed = 0;
     weapon.onFire.add(bomba);
+
+    // GUN
+    gun = game.add.weapon(100, 'bomba');
+    gun.trackSprite(player, 16, 32);
+    gun.bullets.setAll("width", 32);
+    gun.bullets.setAll("height", 28);
+    gun.fireAngle = 0;
+    // gun.bulletGravity = 0;
+    gun.bulletGravity.y = -250;
+    gun.bulletSpeed = 0;
+    // gun.onFire.add(bomba);
+    gun.bulletSpeed = 600;
+    gun.fireRate = 100;
+    gun.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
 
 
     // PLAYER COMMANDS
@@ -131,7 +147,8 @@ export default class Level1 extends Phaser.State {
       controlsUp: game.input.keyboard.addKey(Phaser.Keyboard.UP),
       controlsDown: game.input.keyboard.addKey(Phaser.Keyboard.DOWN),
       controlsLeft: game.input.keyboard.addKey(Phaser.Keyboard.LEFT),
-      controlsRight: game.input.keyboard.addKey(Phaser.Keyboard.RIGHT)
+      controlsRight: game.input.keyboard.addKey(Phaser.Keyboard.RIGHT),
+      gunFire: game.input.keyboard.addKey(Phaser.Keyboard.P)
     };
   }
 
@@ -139,18 +156,17 @@ export default class Level1 extends Phaser.State {
     game.physics.arcade.collide(player, layer);
     game.physics.arcade.collide(checkpoint1, layer);
     game.physics.arcade.collide(weapon.bullets, layer);
+    game.physics.arcade.collide(gun.bullets, layer, function(bullet, layer){
+      bullet.kill()
+    });
 
     player.body.velocity.x = 0;
 
-    if (commands.left.isDown) {
+    if(commands.gunFire.isDown) {
+      gun.fire()
+    }
 
-      if (commands.shift.isDown) {
-        player.body.velocity.x = -250;
-      } else {
-        player.body.velocity.x = -150;
-      }
-
-      //CHECKPOINT
+    //CHECKPOINT
 
       //checkpoint function
 
@@ -163,41 +179,33 @@ export default class Level1 extends Phaser.State {
   //  });
 //
 
-    function player_respawn(){
-      if (player.alive == false && checkpoint1_spento == true){
-        game.time.events.add(Phaser.Timer.SECOND * 0.5, function() {
-        player.reset(12*32,2*32);
-      })
+
+
+//checkpoint spawn
+
+
+ game.physics.arcade.overlap(player, checkpoint1, function(){
+   checkpoint1_spento = false;
+
+ });
+
+
+if (checkpoint1_spento == true) {
+  checkpoint1.animations.play('spento');
+}
+if (checkpoint1_spento == false) {
+  checkpoint1.animations.play('acceso');
+}
+
+
+
+    if (commands.left.isDown) {
+
+      if (commands.shift.isDown) {
+        player.body.velocity.x = -250;
+      } else {
+        player.body.velocity.x = -150;
       }
-      if (player.alive == false && checkpoint1_spento == false){
-        game.time.events.add(Phaser.Timer.SECOND * 0.5, function() {
-        player.reset(25*32,5*32);
-      })
-      }
-
-    }
-
-
-
-    //checkpoint spawn
-
-
-     game.physics.arcade.overlap(player, checkpoint1, function(){
-       checkpoint1_spento = false;
-
-     });
-
-
-    if (checkpoint1_spento == true) {
-      checkpoint1.animations.play('spento');
-    }
-    if (checkpoint1_spento == false) {
-      checkpoint1.animations.play('acceso');
-    }
-
-
-
-
 
       // PARALLAX
       if (playerOldPos.x != player.body.x) {
@@ -246,11 +254,31 @@ export default class Level1 extends Phaser.State {
       }
     };
 
+    if (player.body.velocity.x != 0 || player.body.y != 0) {
+      playerOldPos.x = player.body.x;
+      playerOldPos.y = player.body.y;
+    }
+
   }
 
   // render() {
-  //   game.debug.text(player.body.velocity.x, 2, 14, "#00ff00");
+  //   // game.debug.text(player.body.velocity.x, 2, 14, "#00ff00");
+  //   gun.debug();
   // }
+
+}
+
+function player_respawn(){
+  if (player.alive == false && checkpoint1_spento == true){
+    game.time.events.add(Phaser.Timer.SECOND * 0.5, function() {
+    player.reset(12*32,2*32);
+  })
+  }
+  if (player.alive == false && checkpoint1_spento == false){
+    game.time.events.add(Phaser.Timer.SECOND * 0.5, function() {
+    player.reset(25*32,5*32);
+  })
+  }
 
 }
 
@@ -258,10 +286,7 @@ function bomba(bullet, weapon){
   game.time.events.add(Phaser.Timer.SECOND * 3, function(){
     bullet.kill();
     game.camera.shake(0.01, 300);
+    player.kill();
+    player_respawn();
   });
-
-  if (player.body.velocity.x != 0 || player.body.y != 0) {
-  playerOldPos.x = player.body.x;
-  playerOldPos.y = player.body.y;
-}
 }
