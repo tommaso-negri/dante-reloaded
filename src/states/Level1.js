@@ -1,5 +1,8 @@
 import Phaser from 'phaser-ce';
 
+import Pool from '../other/pool'
+import Bible from '../other/bible'
+
 let map;
 let layer;
 let player;
@@ -23,6 +26,9 @@ let checkpoint1;
 let gun;
 // let music;
 
+let biblePool;
+// let customBible;
+
 
 export default class Level1 extends Phaser.State {
   constructor() {
@@ -30,10 +36,12 @@ export default class Level1 extends Phaser.State {
   }
 
   preload() {
-    game.load.tilemap('Level1Map', 'assets/tilemaps/level1/Level1Map.json', null, Phaser.Tilemap.TILED_JSON);
-    game.load.image('tiles', 'assets/tilemaps/level1/Tiles_32x32.png');
+    game.load.tilemap('MappaOk', 'assets/tilemaps/level1/MappaOK.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.image('tiles', 'assets/tilemaps/level1/TileOk.png');
     game.load.image('dude', 'assets/sprites/phaser-dude.png');
     game.load.image('bomba', 'assets/images/diamond.png');
+
+    game.load.image('bible', 'assets/images/bible.png')
 
     game.load.spritesheet('checkpoint', 'assets/images/Checkpoint.png', 65, 96);
     // this.game.load.audio('music', ['assets/audio/bg_music.mp3']);
@@ -49,10 +57,9 @@ export default class Level1 extends Phaser.State {
   }
 
   create() {
-    game.time.advancedTiming = true;
 
     // PARALLAX
-    parallax1 = this.game.add.tileSprite(-100, - 100, window.innerWidth, window.innerHeight, "1");
+    parallax1 = this.game.add.tileSprite(-50, -50, window.innerWidth * 1.5, window.innerHeight * 1.5, "1");
     parallax2 = this.game.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, "2");
     parallax3 = this.game.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, "3");
     parallax4 = this.game.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, "4");
@@ -69,7 +76,7 @@ export default class Level1 extends Phaser.State {
 
     //CHECKPOINT
 
-    checkpoint1 = game.add.sprite(29*32, 17*32,'checkpoint');
+    checkpoint1 = game.add.sprite(26*32, 58*32,'checkpoint');
     game.physics.arcade.enable(checkpoint1);
     checkpoint1.animations.add('spento', [1],10, true);
     checkpoint1.animations.add('acceso', [0],10, true);
@@ -84,17 +91,16 @@ export default class Level1 extends Phaser.State {
     // music = game.add.audio('music');s
     // music.play();
 
-    map = game.add.tilemap('Level1Map');
+    map = game.add.tilemap('MappaOk');
 
-    map.addTilesetImage('Tiles_32x32', 'tiles');
+    map.addTilesetImage('TileOk', 'tiles');
 
-    layer = map.createLayer('World1');
+    layer = map.createLayer('Tile Layer 1');
 
-    map.setCollision(1);
-    map.setCollision(53);
-    map.setCollision(54);
+    // map.setCollision(1);
+    map.setCollisionBetween(1,49)
 
-    player = game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'dude')
+    player = game.add.sprite(5*32, 66*32, 'dude')
 
     game.physics.enable(player)
 
@@ -109,7 +115,7 @@ export default class Level1 extends Phaser.State {
     game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
 
     // game.world.setBounds(0,0, 1920, 1080)
-    game.world.setBounds(0, 0, 1920, 1920);
+    game.world.setBounds(0, 0, 102*32, 78*32);
 
     //weapon bomba
     weapon = game.add.weapon(3, 'bomba');
@@ -135,6 +141,13 @@ export default class Level1 extends Phaser.State {
     gun.fireRate = 100;
     gun.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
 
+    // BIBLES GROUP & SPAWN
+    biblePool = new Pool(game, Bible, 3, 'Bibles');
+    biblePool.create(6*32, 20*32);
+    biblePool.create(9*32, 20*32);
+    biblePool.create(12*32, 20*32);
+    biblePool.create(15*32, 20*32);
+    biblePool.create(19*32, 20*32);
 
     // PLAYER COMMANDS
     commands = {
@@ -153,6 +166,11 @@ export default class Level1 extends Phaser.State {
   }
 
   update() {
+    game.physics.arcade.overlap(player, biblePool, function(player, bible) {
+      // enemy.hit(player);
+      bible.hit();
+    });
+
     game.physics.arcade.collide(player, layer);
     game.physics.arcade.collide(checkpoint1, layer);
     game.physics.arcade.collide(weapon.bullets, layer);
@@ -167,17 +185,12 @@ export default class Level1 extends Phaser.State {
     }
 
     //CHECKPOINT
-
-      //checkpoint function
-
-//
-      // NELL'ENEMY   game.physics.arcade.overlap(enemy, player, function(e,p) {
-        //if(nemico_attivo == true){
-          //p.kill();
-          //player_respawn();   ---->  VA INSERITO QUESTO PER FAR FUNZIONARE IL CHECKPOINT
-        //}
-  //  });
-//
+    // game.physics.arcade.overlap(enemy, player, function(e,p) {
+    //   if(nemico_attivo == true){
+    //     p.kill();
+    //     player_respawn();
+    //   }
+    // });
 
 
 
@@ -201,10 +214,12 @@ if (checkpoint1_spento == false) {
 
     if (commands.left.isDown) {
 
-      if (commands.shift.isDown) {
-        player.body.velocity.x = -250;
-      } else {
-        player.body.velocity.x = -150;
+      if(player.alive == true) {
+        if (commands.shift.isDown) {
+          player.body.velocity.x = -250;
+        } else {
+          player.body.velocity.x = -150;
+        }
       }
 
       // PARALLAX
@@ -271,15 +286,14 @@ if (checkpoint1_spento == false) {
 function player_respawn(){
   if (player.alive == false && checkpoint1_spento == true){
     game.time.events.add(Phaser.Timer.SECOND * 0.5, function() {
-    player.reset(12*32,2*32);
+    player.reset(5*32, 66*32);
   })
   }
   if (player.alive == false && checkpoint1_spento == false){
     game.time.events.add(Phaser.Timer.SECOND * 0.5, function() {
-    player.reset(25*32,5*32);
+    player.reset(26*32, 60*32);
   })
   }
-
 }
 
 function bomba(bullet, weapon){
