@@ -36,8 +36,8 @@ export default class Level1 extends Phaser.State {
   }
 
   preload() {
-    game.load.tilemap('Level1Map', 'assets/tilemaps/level1/Level1Map.json', null, Phaser.Tilemap.TILED_JSON);
-    game.load.image('tiles', 'assets/tilemaps/level1/Tiles_32x32.png');
+    game.load.tilemap('MappaOk', 'assets/tilemaps/level1/MappaOK.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.image('tiles', 'assets/tilemaps/level1/TileOk.png');
     game.load.image('dude', 'assets/sprites/phaser-dude.png');
     game.load.image('bomba', 'assets/images/diamond.png');
 
@@ -76,7 +76,7 @@ export default class Level1 extends Phaser.State {
 
     //CHECKPOINT
 
-    checkpoint1 = game.add.sprite(29*32, 17*32,'checkpoint');
+    checkpoint1 = game.add.sprite(26*32, 58*32,'checkpoint');
     game.physics.arcade.enable(checkpoint1);
     checkpoint1.animations.add('spento', [1],10, true);
     checkpoint1.animations.add('acceso', [0],10, true);
@@ -91,17 +91,16 @@ export default class Level1 extends Phaser.State {
     // music = game.add.audio('music');s
     // music.play();
 
-    map = game.add.tilemap('Level1Map');
+    map = game.add.tilemap('MappaOk');
 
-    map.addTilesetImage('Tiles_32x32', 'tiles');
+    map.addTilesetImage('TileOk', 'tiles');
 
-    layer = map.createLayer('World1');
+    layer = map.createLayer('Tile Layer 1');
 
-    map.setCollision(1);
-    map.setCollision(53);
-    map.setCollision(54);
+    // map.setCollision(1);
+    map.setCollisionBetween(1,49)
 
-    player = game.add.sprite(4*32, 17*32, 'dude')
+    player = game.add.sprite(5*32, 66*32, 'dude')
 
     game.physics.enable(player)
 
@@ -116,7 +115,7 @@ export default class Level1 extends Phaser.State {
     game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
 
     // game.world.setBounds(0,0, 1920, 1080)
-    game.world.setBounds(0, 0, 1024, 768);
+    game.world.setBounds(0, 0, 102*32, 78*32);
 
     //weapon bomba
     weapon = game.add.weapon(3, 'bomba');
@@ -186,17 +185,12 @@ export default class Level1 extends Phaser.State {
     }
 
     //CHECKPOINT
-
-      //checkpoint function
-
-//
-      // NELL'ENEMY   game.physics.arcade.overlap(enemy, player, function(e,p) {
-        //if(nemico_attivo == true){
-          //p.kill();
-          //player_respawn();   ---->  VA INSERITO QUESTO PER FAR FUNZIONARE IL CHECKPOINT
-        //}
-  //  });
-//
+    // game.physics.arcade.overlap(enemy, player, function(e,p) {
+    //   if(nemico_attivo == true){
+    //     p.kill();
+    //     player_respawn();
+    //   }
+    // });
 
 
 
@@ -220,10 +214,12 @@ if (checkpoint1_spento == false) {
 
     if (commands.left.isDown) {
 
-      if (commands.shift.isDown) {
-        player.body.velocity.x = -250;
-      } else {
-        player.body.velocity.x = -150;
+      if(player.alive == true) {
+        if (commands.shift.isDown) {
+          player.body.velocity.x = -250;
+        } else {
+          player.body.velocity.x = -150;
+        }
       }
 
       // PARALLAX
@@ -290,15 +286,14 @@ if (checkpoint1_spento == false) {
 function player_respawn(){
   if (player.alive == false && checkpoint1_spento == true){
     game.time.events.add(Phaser.Timer.SECOND * 0.5, function() {
-    player.reset(12*32,2*32);
+    player.reset(5*32, 66*32);
   })
   }
   if (player.alive == false && checkpoint1_spento == false){
     game.time.events.add(Phaser.Timer.SECOND * 0.5, function() {
-    player.reset(25*32,5*32);
+    player.reset(26*32, 60*32);
   })
   }
-
 }
 
 function bomba(bullet, weapon){
