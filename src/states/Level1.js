@@ -2,6 +2,8 @@ import Phaser from 'phaser-ce';
 
 import Pool from '../other/pool'
 import Bible from '../other/bible'
+import Ghost from '../other/ghost'
+import Bullet from '../other/bullet'
 
 let map;
 let layer;
@@ -27,8 +29,8 @@ let gun;
 // let music;
 
 let biblePool;
-// let customBible;
-
+let ghostPool;
+let bulletPool;
 
 export default class Level1 extends Phaser.State {
   constructor() {
@@ -41,7 +43,8 @@ export default class Level1 extends Phaser.State {
     game.load.image('dude', 'assets/sprites/phaser-dude.png');
     game.load.image('bomba', 'assets/images/diamond.png');
 
-    game.load.image('bible', 'assets/images/bible.png')
+    game.load.image('ghost', 'assets/images/ghost.png');
+    game.load.image('bible', 'assets/images/bible.png');
 
     game.load.spritesheet('checkpoint', 'assets/images/Checkpoint.png', 65, 96);
     // this.game.load.audio('music', ['assets/audio/bg_music.mp3']);
@@ -82,8 +85,6 @@ export default class Level1 extends Phaser.State {
     checkpoint1.animations.add('acceso', [0],10, true);
     checkpoint1_spento = true;
 
-    //
-
     game.physics.startSystem(Phaser.Physics.ARCADE);
     jumpControll=0;
 
@@ -91,28 +92,24 @@ export default class Level1 extends Phaser.State {
     // music = game.add.audio('music');s
     // music.play();
 
+
+    // MAP & TILESET
     map = game.add.tilemap('MappaOk');
-
     map.addTilesetImage('TileOk', 'tiles');
-
     layer = map.createLayer('Tile Layer 1');
-
     // map.setCollision(1);
     map.setCollisionBetween(1,49)
 
+
+    // PLAYER
     player = game.add.sprite(5*32, 66*32, 'dude')
-
     game.physics.enable(player)
-
     game.physics.arcade.gravity.y = 250;
-
     player.body.collideWorldBounds = true;
-
     player.body.bounce.y = 0.1;
     player.body.linearDamping = 1;
-
-    // game.camera.follow(player);
     game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
+
 
     // game.world.setBounds(0,0, 1920, 1080)
     game.world.setBounds(0, 0, 102*32, 78*32);
@@ -142,12 +139,17 @@ export default class Level1 extends Phaser.State {
     gun.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
 
     // BIBLES GROUP & SPAWN
-    biblePool = new Pool(game, Bible, 3, 'Bibles');
-    biblePool.create(6*32, 20*32);
-    biblePool.create(9*32, 20*32);
-    biblePool.create(12*32, 20*32);
-    biblePool.create(15*32, 20*32);
-    biblePool.create(19*32, 20*32);
+    biblePool = new Pool(game, Bible, 2, true, 'Bibles');
+    biblePool.create(17*32, 68*32);
+    biblePool.create(6*32, 58*32);
+    biblePool.create(17*32, 63*32);
+    biblePool.create(6*32, 61*32);
+
+    ghostPool = new Pool(game, Ghost, 3, false, 'Ghost');
+    ghostPool.create(16*32, 63*32)
+    
+    // bulletPool = new Pool(game, Bullet, 3, 'Bullet');
+    // bulletPool.create(player.x, player.y)
 
     // PLAYER COMMANDS
     commands = {
@@ -177,6 +179,10 @@ export default class Level1 extends Phaser.State {
     game.physics.arcade.collide(gun.bullets, layer, function(bullet, layer){
       bullet.kill()
     });
+    game.physics.arcade.overlap(gun.bullets, ghostPool, function(bullet, ghost){
+      ghost.hit(bullet);
+      bullet.destroy();
+    })
 
     player.body.velocity.x = 0;
 
