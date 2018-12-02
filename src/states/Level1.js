@@ -274,6 +274,14 @@ if (checkpoint1_spento == false) {
       playerOldPos.y = player.body.y;
     }
 
+    // kill in 104px - hit range
+    // if (this.game.math.distance(
+    //   player.position.x, player.position.y,
+    //    ghost.x, ghost.y) < 104) {
+    //      player.kill();
+    //      player_respawn();
+    //  }
+
   }
 
   // render() {
