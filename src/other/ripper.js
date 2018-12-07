@@ -1,4 +1,4 @@
-import Enemy from './enemy'
+import Enemy from './enemyTest'
 
 export default class Ripper extends Enemy {
  
