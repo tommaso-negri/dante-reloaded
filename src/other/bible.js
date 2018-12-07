@@ -6,8 +6,8 @@ export default class Bible extends Phaser.Sprite {
 
     this.game.physics.enable(this);
     this.game.physics.arcade.gravity.y = 250;
-    this.body.allowGravity = false;
-    this.body.immovable = true;
+    this.body.allowGravity = true;
+    this.body.immovable = false;
   }
 
   stdReset(x, y) {
@@ -17,6 +17,7 @@ export default class Bible extends Phaser.Sprite {
 
   spawn(x, y) {
     this.stdReset(x, y);
+    // this.body.velocity.x = 10
   }
 
   hit() {

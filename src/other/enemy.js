@@ -6,12 +6,13 @@ export default class Enemy extends Phaser.Sprite {
 
     // BODY
     this.game.physics.enable(this);
+    this.game.physics.arcade.gravity.y = 250;
     this.body.allowGravity = false;
     this.body.immovable = true;
 
     // VULNERABILITIES
     this.vulnerabilities = {
-      normal: 1,
+      gun: 1,
       bomb: 10
     };
     
@@ -28,19 +29,7 @@ export default class Enemy extends Phaser.Sprite {
   }
 
   hit(bullet) {
-    if (this.dying) {
-      return
-    }
-
-    this.health -= 0.3;
-
-    if (this.health < 0) {
-      this.dying = true;
-      this.body.velocity.x = 0;
-      this.body.velocity.y = 0;
-      this.body.allowGravity = false;
-      this.death();
-    }
+    this.hit(bullet)
   }
 
   death() {
