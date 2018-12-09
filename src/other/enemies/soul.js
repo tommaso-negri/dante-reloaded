@@ -1,14 +1,14 @@
 import Enemy from './enemy'
 
-export default class Ghost extends Enemy {
+export default class Soul extends Enemy {
   constructor(game) {
-    super(game, 'ghost')
+    super(game, 'soul')
     
     this.body.allowGravity = true;
     this.body.immovable = false;
 
     this.vulnerabilities = {
-      gun: 0.3,
+      gun: 0.8,
       bomb: 10
     };
 
@@ -17,8 +17,8 @@ export default class Ghost extends Enemy {
       patrollR: 0
     }
 
-    this.height = 32;
-    this.width = 32;
+    this.height = 71;
+    this.width = 53;
   }
 
   hit(bullet) {

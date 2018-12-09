@@ -4,7 +4,8 @@ export default class Weapon extends Phaser.Group {
   constructor(game, spriteType, instances, override, weaponConfig, name) {
     super(game, game.world, name)
     this.game = game;
-    this.spriteType = spriteType
+    this.spriteType = spriteType;
+    this.weaponConfig = weaponConfig;
     overrideElementsNum = override;
 
     this.nextFire = 0;
@@ -27,11 +28,11 @@ export default class Weapon extends Phaser.Group {
     let y = source.y + 0;
 
     if (data.direction == 180) {
-      x = source.x - 15;
+      x = source.x - 30;
       y = source.y + 0;
     }
-    if (data.direction == 0) {
-      x = source.x + 15;
+    if (data.direction == 0 && this.weaponConfig.bulletType != 'bomb') {
+      x = source.x + 30;
       y = source.y + 0;
     }
     if (data.direction == -90) {

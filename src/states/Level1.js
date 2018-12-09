@@ -3,29 +3,44 @@ import Phaser from 'phaser-ce';
 import Player from '../other/player'
 import Pool from '../other/pool'
 import Bible from '../other/bible'
-import Ghost from '../other/ghost'
-import Bullet from '../other/bullet'
-import Bomb from '../other/bomb'
-import Weapon from '../other/weapon'
+import Ghost from '../other/enemies/ghost'
+import Soul from '../other/enemies/soul'
+import Bullet from '../other/weapons/bullet'
+import Bomb from '../other/weapons/bomb'
+import Weapon from '../other/weapons/weapon'
+import bombCounter from '../other/inGameUi/bombCounter'
+import MovingPlatformPool from '../other/movingPlatform/movingPlatformPool'
+import MovingPlatform from '../other/movingPlatform/movingPlatform';
 
 let map;
 let layer;
+let movente;
+let movingPlatformPool;
+
 let player;
 let playerOldPos = {
   x: 0,
   y: 0
 };
 let commands;
-let weapon;
-let checkpoint1_spento;
-let checkpoint1;
 
 let gun;
 let bomb;
-// let music;
+let numBombs = 0;
 
 let biblePool;
+
 let ghostPool;
+let soulPool;
+
+let flashbacks = {
+  uno: true,
+  due: true,
+  tre: true
+}
+
+let bombUI;
+let bombDropping = false;
 
 export default class Level1 extends Phaser.State {
   constructor() {
@@ -35,14 +50,17 @@ export default class Level1 extends Phaser.State {
   preload() {
     game.load.tilemap('MappaOk', 'assets/tilemaps/level1/MappaOK.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('tiles', 'assets/tilemaps/level1/TileOk.png');
-    game.load.image('dude', 'assets/sprites/phaser-dude.png');
-    game.load.spritesheet('playerSprite', 'assets/sprites/omino.png', 35.1333333, 48)
-    game.load.image('bomba', 'assets/images/diamond.png');
+    game.load.spritesheet('playerSprite', 'assets/sprites/omino.png', 51, 71)
+    game.load.image('bullet', 'assets/sprites/bullet.png');
+    game.load.spritesheet('kaboom', 'assets/sprites/explode.png', 128, 128);
 
     game.load.image('ghost', 'assets/images/ghost.png');
+    game.load.image('soul', 'assets/sprites/soul.gif')
     game.load.image('bible', 'assets/images/bible.png');
+    game.load.image('movente', 'assets/images/semimovente.png');
+    game.load.image('testFlashback', 'assets/images/testFlashback.png')
 
-    game.load.spritesheet('checkpoint', 'assets/images/Checkpoint.png', 65, 96);
+    game.load.spritesheet('contatore', 'assets/images/contatore.png', 1062.75, 501)
     // this.game.load.audio('music', ['assets/audio/bg_music.mp3']);
 
     // PARALLAX BGs
@@ -55,7 +73,6 @@ export default class Level1 extends Phaser.State {
   create() {
 
     // PARALLAX
-    // this.game.stage.backgroundColor = '#697e96';
     this.parallax1 = this.game.add.tileSprite(0,
         this.game.height - this.game.cache.getImage('level1BG1').height,
         this.game.width,
@@ -85,27 +102,19 @@ export default class Level1 extends Phaser.State {
     this.parallax3.fixedToCamera =  true;
     this.parallax4.fixedToCamera =  true;
 
-
-    //CHECKPOINT
-    checkpoint1 = game.add.sprite(26*32, 58*32,'checkpoint');
-    game.physics.arcade.enable(checkpoint1);
-    checkpoint1.animations.add('spento', [1],10, true);
-    checkpoint1.animations.add('acceso', [0],10, true);
-    checkpoint1_spento = true;
-
+    // WORLD & MAP & TILESET
     game.physics.startSystem(Phaser.Physics.ARCADE);
+    game.world.setBounds(0, 0, 96*32, 72*32);
 
-    // Audio
-    // music = game.add.audio('music');s
-    // music.play();
-
-
-    // MAP & TILESET
     map = game.add.tilemap('MappaOk');
     map.addTilesetImage('TileOk', 'tiles');
     layer = map.createLayer('Tile Layer 1');
     // map.setCollision(1);
-    map.setCollisionBetween(1,49)
+    map.setCollisionBetween(1,49);
+
+    //MOVING PLATFORMS
+    // movingPlatformPool = new Pool(game, MovingPlatform, 1, true, 'movingPlatform');
+    // movingPlatformPool.create(37*32, 49*32, {sprite: 'movente'})
 
     // PLAYER COMMANDS
     commands = {
@@ -118,109 +127,90 @@ export default class Level1 extends Phaser.State {
       controlsUp: game.input.keyboard.addKey(Phaser.Keyboard.UP),
       controlsDown: game.input.keyboard.addKey(Phaser.Keyboard.DOWN),
       controlsLeft: game.input.keyboard.addKey(Phaser.Keyboard.LEFT),
-      controlsRight: game.input.keyboard.addKey(Phaser.Keyboard.RIGHT),
-      gunFire: game.input.keyboard.addKey(Phaser.Keyboard.P)
+      controlsRight: game.input.keyboard.addKey(Phaser.Keyboard.RIGHT)
     };
 
     // PLAYER
     player = new Player(game, commands);
     game.add.existing(player);
-    player.spawn(7*32, 66*32);
+    player.spawn(1*32, 69*32);
 
-
-    game.world.setBounds(0, 0, 102*32, 78*32);
-
-    //weapon bomba
-    weapon = game.add.weapon(3, 'bomba');
-    weapon.trackSprite(player, 16, 32);
-    weapon.bullets.setAll("width", 32);
-    weapon.bullets.setAll("height", 28);
-    weapon.fireAngle = 0;
-    weapon.bulletGravity = 0;
-    weapon.bulletSpeed = 0;
-    // weapon.onFire.add(bomba);
-
-    // GUN
-
-    // BIBLES GROUP & SPAWN
+    // BIBLES POOL
     biblePool = new Pool(game, Bible, 2, true, 'Bibles');
-    biblePool.create(17*32, 68*32);
-    biblePool.create(6*32, 58*32);
-    biblePool.create(17*32, 63*32);
-    biblePool.create(6*32, 61*32);
+    biblePool.create(36*32, 61*32);
+    biblePool.create(7*32, 54*32);
+    biblePool.create(46*32, 55*32);
 
-    ghostPool = new Pool(game, Ghost, 3, false, 'Ghost');
-    ghostPool.create(22*32, 60*32, {patrollL: 22*32, patrollR: 31*32})
-    ghostPool.create(4*32, 58*32, {patrollL: 4*32, patrollR: 8*32})
-    ghostPool.create(14*32, 63*32, {patrollL: 14*32, patrollR: 17*32})
+    // SOULS POOL
+    soulPool = new Pool(game, Soul, 3, false, 'Souls');
+    soulPool.create(21*32, 58*32, {patrollL: 21*32, patrollR: 27*32});
 
-    gun = new Weapon(game, Bullet, 64, false, {bulletSpeed: 600, fireRate: 100, bulletType: 'gun'}, 'Gun');
+    // GHOSTS POOL
+    ghostPool = new Pool(game, Ghost, 3, false, 'Ghosts');
+    ghostPool.create(5*32, 69*32, {patrollL: 0, patrollR: 0});
+    // ghostPool.create(4*32, 58*32, {patrollL: 4*32, patrollR: 8*32})
 
-    bomb = new Weapon(game, Bomb, 3, false, {bulletSpeed: 0, fireRate: 300, bulletType: 'bomb'}, 'Bomb')
+    // WEAPONS
+    gun = new Weapon(game, Bullet, 64, false, {bulletSpeed: 500, fireRate: 270, bulletType: 'gun'}, 'Gun');
+
+    bomb = new Weapon(game, Bomb, 3, false, {bulletSpeed: 0, fireRate: 300, bulletType: 'bomb'}, 'Bomb');
+
+    // IN GAME GUI
+    bombUI = new bombCounter(game)
+    game.add.existing(bombUI);
   }
 
   update() {
-    game.physics.arcade.overlap(player, biblePool, function(player, bible) {
-      // enemy.hit(player);
-      bible.hit();
-    });
-
-    game.physics.arcade.overlap(player, ghostPool, function(player, ghost){
-      player.hit(ghost);
-    })
-    
-    game.physics.arcade.collide(biblePool, layer);
-    game.physics.arcade.collide(ghostPool, layer);
+    // PHYSIC COLLISIONS
     game.physics.arcade.collide(player, layer);
-    game.physics.arcade.collide(checkpoint1, layer);
+    game.physics.arcade.collide(biblePool, layer);
+    game.physics.arcade.collide(soulPool, layer);
+    game.physics.arcade.collide(ghostPool, layer);
     game.physics.arcade.collide(bomb, layer);
     game.physics.arcade.collide(gun, layer, function(bullet, layer){
       bullet.exists = false;
     });
-    game.physics.arcade.overlap(gun, ghostPool, function(bullet, ghost){
-      ghost.hit(bullet);
-      bullet.exists = false;
-    })
-    game.physics.arcade.overlap(bomb, ghostPool, function(bullet, ghost){
-        ghost.hit(bullet);
-        // player.kill();
-        // player_respawn();
-    })
-
-    player.body.velocity.x = 0;
-
-    //CHECKPOINT
-    // game.physics.arcade.overlap(enemy, player, function(e,p) {
-    //   if(nemico_attivo == true){
-    //     p.kill();
-    //     player_respawn();
-    //   }
-    // });
+    // game.physics.arcade.collide(player, movingPlatformPool);
 
 
+    // ITEMS
+    game.physics.arcade.overlap(player, biblePool, function(player, bible) {
+      bible.hit();
 
-    //checkpoint spawn
-
-
-    game.physics.arcade.overlap(player, checkpoint1, function(){
-      checkpoint1_spento = false;
-
+      if (numBombs <= 3) {
+        numBombs++
+      }
+      bombUI.dataGatering(numBombs);
     });
 
 
-    if (checkpoint1_spento == true) {
-      checkpoint1.animations.play('spento');
-    }
-    if (checkpoint1_spento == false) {
-      checkpoint1.animations.play('acceso');
-    }
+    // PLAYER HIT
+    game.physics.arcade.overlap(player, soulPool, function(player, enemy){
+      player.hit(enemy);
+    })
+    game.physics.arcade.overlap(player, ghostPool, function(player, enemy){
+      player.hit(enemy);
+    })
+    
+    
+    // ENEMY HIT
+    game.physics.arcade.overlap(gun, soulPool, function(bullet, enemy){
+      enemy.hit(bullet);
+      bullet.exists = false;
+    })
+    game.physics.arcade.overlap(gun, ghostPool, function(bullet, enemy){
+      enemy.hit(bullet);
+      bullet.exists = false;
+    })
+    game.physics.arcade.overlap(bomb, soulPool, function(bullet, enemy){
+      enemy.hit(bullet);
+    })
+    game.physics.arcade.overlap(bomb, ghostPool, function(bullet, enemy){
+      enemy.hit(bullet);
+    })
 
-    if (commands.controlsDown.isDown) {
-      // weapon.fire();
-      // bomb.fire(player);
-      game.camera.shake(0.01, 300);
-    }
 
+    // GUN
     if (commands.controlsLeft.isDown) {
       gun.fire(player, {direction: 180})
     }
@@ -228,6 +218,20 @@ export default class Level1 extends Phaser.State {
     if(commands.controlsRight.isDown) {
       gun.fire(player, {direction: 0})
     }
+
+
+    // BOMB DROPPING
+    if (this.inputIsActive(Phaser.Keyboard.DOWN)) {
+      bombDropping = true;
+    }
+
+    if (numBombs > 0 && bombDropping && this.inputReleased(Phaser.Keyboard.DOWN)) {
+      numBombs -= 1;
+      bombUI.dataGatering(numBombs);
+      bombDropping = false;
+      bomb.fire(player, {direction: 0});
+    }
+
 
     // PARALLAX
     if (playerOldPos.x > player.body.x) {
@@ -249,34 +253,43 @@ export default class Level1 extends Phaser.State {
       playerOldPos.y = player.body.y;
     }
 
+    // FLASHBACKS
+    if (player.x >= 45*32 && player.y <= 55*32 && flashbacks.uno) {
+      this.gameFlashback('testFlashback', 'uno')
+    }
   }
 
-  render() {
-    this.game.debug.start(32, 32);
-    this.game.debug.line(`Health: ${player.health}/${player.maxHealth}`);
-    this.game.debug.line(`Velocity: ${player.body.velocity.y}/${player.body.velocity.y}`);
-  }
+  gameFlashback(image, index) {
+    let flashback;
+    flashback = this.game.add.sprite(0,0, image);
+    this.game.add.existing(flashback);
+    flashback.fixedToCamera = true;
+    console.log(flashbacks.uno)
+    setTimeout(function(){
+        this.game.paused = false;
+        flashback.destroy();
+    }.bind(this), 3000);
+    flashbacks[index] = false;
+    console.log(flashbacks.uno)
+    this.game.paused = true;
+  };
 
-}
+  inputIsActive(key) {
+    let isActive = false;
+    isActive = this.game.input.keyboard.downDuration(key);
+    return isActive;
+  };
 
-function player_respawn(){
-  if (player.alive == false && checkpoint1_spento == true){
-    game.time.events.add(Phaser.Timer.SECOND * 0.5, function() {
-    player.reset(5*32, 66*32);
-  })
-  }
-  if (player.alive == false && checkpoint1_spento == false){
-    game.time.events.add(Phaser.Timer.SECOND * 0.5, function() {
-    player.reset(26*32, 60*32);
-  })
-  }
-}
+  inputReleased(key) {
+    let released = false;
+    released = this.game.input.keyboard.upDuration(key);
+    return released;
+  };
 
-function bomba(bullet, weapon){
-  game.time.events.add(Phaser.Timer.SECOND * 3, function(){
-    bullet.kill();
-    game.camera.shake(0.01, 300);
-    player.kill();
-    player_respawn();
-  });
+  // render() {
+  //   this.game.debug.start(32, 32);
+  //   this.game.debug.line(`Health: ${player.health}/${player.maxHealth}`);
+  //   this.game.debug.line(`Velocity: ${player.body.velocity.y}/${player.body.velocity.y}`);
+  // }
+
 }

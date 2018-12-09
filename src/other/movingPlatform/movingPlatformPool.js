@@ -1,10 +1,11 @@
 let overrideElementsNum
 
-export default class Pool extends Phaser.Group {
-  constructor(game, spriteType, instances, override, name) {
+export default class MovingPlatformPool extends Phaser.Group {
+  constructor(game, spriteType, sprite, instances, override, name) {
     super(game, game.world, name);
     this.game = game;
     this.spriteType = spriteType;
+    this.sprite = sprite;
     overrideElementsNum = override;
     if (instances > 0) {
       let sprite;
@@ -21,7 +22,7 @@ export default class Pool extends Phaser.Group {
       if (!overrideElementsNum) {
         return
       } else {
-        obj = new this.spriteType(this.game);
+        obj = new this.spriteType(this.game, this.sprite);
         this.add(obj, true);
       }
     }

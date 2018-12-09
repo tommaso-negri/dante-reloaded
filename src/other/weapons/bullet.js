@@ -1,13 +1,13 @@
-export default class Bomb extends Phaser.Sprite {
+export default class Bullet extends Phaser.Sprite {
   constructor(game, bulletType) {
-    super(game, 0, 0, 'bomba')
+    super(game, 0, 0, 'bullet')
 
     this.texture.baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
-    this.anchor.set(0.5);
+    this.anchor.set(0.5, 0.5);
 
     this.game.physics.enable(this);
     this.game.physics.arcade.gravity.y = 250;
-    this.body.allowGravity = true;
+    this.body.allowGravity = false;
     this.body.immovable = false;
 
     this.checkWorldBounds = true;
@@ -17,35 +17,24 @@ export default class Bomb extends Phaser.Sprite {
     this.tracking = false;
     this.scaleSpeed = 0;
 
-    this.bulletType = bulletType;
-    this.exploded = false;
+    this.bulletType = bulletType
   }
 
-  fire(x, y, angle, speed, gx, gy, data) {
+  fire(x, y, angle, speed, gx, gy) {
     gx = gx || 0;
     gy = gy || 0;
 
     this.exists = true;
     this.reset(x, y);
     this.scale.set(1);
-    // this.hitArea = new Phaser.Circle(x, y, 90);
-    // this.body.setSize(0, 0, 100, 100);
-
-    let test = new Phaser.Circle(x,y,90)
-
-    this.addChild(test)
 
     this.game.physics.arcade.velocityFromAngle(angle, speed, this.body.velocity);
 
-    game.time.events.add(Phaser.Timer.SECOND * 3, function(){
-      this.exploded = true;
-      game.time.events.add(Phaser.Timer.SECOND * 0.0001, function(){
-        this.exists = false;
-        game.camera.shake(0.01, 300);
-      }.bind(this))
-    }.bind(this));
-
-    this.angle = angle;
+    if (angle == 180) {
+      this.angle = -90;
+    } else if (angle == 0) {
+      this.angle = 90;
+    };
 
     this.body.gravity.set(gx, gy);
   }
