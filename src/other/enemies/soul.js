@@ -1,4 +1,5 @@
 import Enemy from './enemy'
+import Player from '../player';
 
 export default class Soul extends Enemy {
   constructor(game) {
@@ -57,6 +58,8 @@ export default class Soul extends Enemy {
     if (this.x <= this.settings.patrollL + (this.width/2)) {
       this.body.velocity.x = 80;
     }
+    // this.body.velocity.x = Math.sin(this.game.time.now/500)*100+(player.x-this.x)*500;
+    // this.body.velocity.y = Math.cos(this.game.time.now/1000)*100
   }
 
 }

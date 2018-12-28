@@ -101,6 +101,8 @@ export default class Level1 extends Phaser.State {
     this.parallax2.fixedToCamera =  true;
     this.parallax3.fixedToCamera =  true;
     this.parallax4.fixedToCamera =  true;
+    
+    // this.parallax3.cameraOffset.y = 0;
 
     // WORLD & MAP & TILESET
     game.physics.startSystem(Phaser.Physics.ARCADE);
