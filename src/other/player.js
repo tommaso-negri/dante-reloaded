@@ -22,13 +22,13 @@ export default class Player extends Phaser.Sprite {
       onTheGround: null,
       jumps: 0,
       jumping: false,
-      jumpSpeed: -180
+      jumpSpeed: -330
     }
 
     this.commands = commands;
 
     this.game.physics.enable(this);
-    this.game.physics.arcade.gravity.y = 350;
+    this.body.gravity.y = 350;
     this.body.collideWorldBounds = true;
     this.body.bounce.y = 0.1;
     this.body.linearDamping = 1;
