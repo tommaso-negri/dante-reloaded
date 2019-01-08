@@ -31,9 +31,9 @@ export default class Bullet extends Phaser.Sprite {
     this.game.physics.arcade.velocityFromAngle(angle, speed, this.body.velocity);
 
     if (angle == 180) {
-      this.angle = -90;
+      this.angle = -185;
     } else if (angle == 0) {
-      this.angle = 90;
+      this.angle = -175;
     };
 
     this.body.gravity.set(gx, gy);

@@ -1,4 +1,4 @@
-export default class bombCounter extends Phaser.Sprite {
+export default class BombCounter extends Phaser.Sprite {
   constructor(game) {
     super(game, 25, 25, 'contatore');
     this.exists = true;

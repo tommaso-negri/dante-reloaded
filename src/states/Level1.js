@@ -1,4 +1,4 @@
-import Phaser from 'phaser-ce';
+import Phaser from 'phaser-ce'
 
 import Player from '../other/player'
 import Pool from '../other/pool'
@@ -8,39 +8,41 @@ import Soul from '../other/enemies/soul'
 import Bullet from '../other/weapons/bullet'
 import Bomb from '../other/weapons/bomb'
 import Weapon from '../other/weapons/weapon'
-import bombCounter from '../other/inGameUi/bombCounter'
-import MovingPlatformPool from '../other/movingPlatform/movingPlatformPool'
-import MovingPlatform from '../other/movingPlatform/movingPlatform';
+import BombCounter from '../other/inGameUi/bombCounter'
 
-let map;
-let layer;
-let movente;
-let movingPlatformPool;
+import MovingPlatform from '../other/specialPlatforms/movingPlatform'
+import FallingPlatform from '../other/specialPlatforms/fallingPlatform'
 
-let player;
+import Level2 from './Level2'
+
+let map
+let layer
+let movente
+
+let player
 let playerOldPos = {
   x: 0,
   y: 0
-};
-let commands;
+}
+let commands
 
-let gun;
-let bomb;
-let numBombs = 0;
+let gun
+let bomb
+let numBombs = 0
 
-let biblePool;
+let biblePool
 
-let ghostPool;
-let soulPool;
+let ghostPool
+let soulPool
 
 let flashbacks = {
-  uno: true,
-  due: true,
-  tre: true
+  one: true,
+  two: true,
+  three: true
 }
 
-let bombUI;
-let bombDropping = false;
+let bombUI
+let bombDropping = false
 
 export default class Level1 extends Phaser.State {
   constructor() {
@@ -48,16 +50,18 @@ export default class Level1 extends Phaser.State {
   }
 
   preload() {
-    game.load.tilemap('MappaOk', 'assets/tilemaps/level1/MappaOK.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('Level1Map', 'assets/tilemaps/level1/Level1Map.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('tiles', 'assets/tilemaps/level1/TileOk.png');
-    game.load.spritesheet('playerSprite', 'assets/sprites/omino.png', 51, 71)
+    // game.load.spritesheet('playerSprite', 'assets/sprites/player.png', 51, 71)
     game.load.image('bullet', 'assets/sprites/bullet.png');
-    game.load.spritesheet('kaboom', 'assets/sprites/explode.png', 128, 128);
+
+    game.load.atlas('bomb_explosion', 'assets/sprites/bomb_explosion/bomb_explosion.png', 'assets/sprites/bomb_explosion/bomb_explosion.json');
+    game.load.atlas('player', 'assets/sprites/player/player.png', 'assets/sprites/player/player.json');
 
     game.load.image('ghost', 'assets/images/ghost.png');
     game.load.image('soul', 'assets/sprites/soul.gif')
     game.load.image('bible', 'assets/images/bible.png');
-    game.load.image('movente', 'assets/images/semimovente.png');
+    game.load.image('movente', 'assets/sprites/movingPlatform.png');
     game.load.image('testFlashback', 'assets/images/testFlashback.png')
 
     game.load.spritesheet('contatore', 'assets/images/contatore.png', 1062.75, 501)
@@ -104,19 +108,45 @@ export default class Level1 extends Phaser.State {
     
     // this.parallax3.cameraOffset.y = 0;
 
-    // WORLD & MAP & TILESET
-    game.physics.startSystem(Phaser.Physics.ARCADE);
-    game.world.setBounds(0, 0, 96*32, 72*32);
+    // WORLD, MAP, TILESET
+    game.physics.startSystem(Phaser.Physics.ARCADE)
+    game.world.setBounds(0, 0, 96*32, 72*32)
 
-    map = game.add.tilemap('MappaOk');
-    map.addTilesetImage('TileOk', 'tiles');
-    layer = map.createLayer('Tile Layer 1');
-    // map.setCollision(1);
-    map.setCollisionBetween(1,49);
+    map = game.add.tilemap('Level1Map')
+    map.addTilesetImage('TileOk', 'tiles')
+    layer = map.createLayer('Tile Layer 1')
+    // map.setCollision(1)
+    map.setCollisionBetween(1,49)
 
-    //MOVING PLATFORMS
-    // movingPlatformPool = new Pool(game, MovingPlatform, 1, true, 'movingPlatform');
-    // movingPlatformPool.create(37*32, 49*32, {sprite: 'movente'})
+    // SPECIAL PLATFORMS - MOVING
+    this.movingPlatformPool = this.add.physicsGroup()
+
+    this.movingPlatform1 = new MovingPlatform(this.game, 34*32, 50*32, 'movente', this.movingPlatformPool)
+    this.movingPlatform1.addMotionPath([
+      { x: "+130", xSpeed: 2000, xEase: "Linear", y: "+0", ySpeed: 2000, yEase: "Sine.easeIn" },
+      { x: "-130", xSpeed: 2000, xEase: "Linear", y: "-0", ySpeed: 2000, yEase: "Sine.easeOut" }
+    ])
+
+    this.movingPlatform2 = new MovingPlatform(this.game, 46*32, 42*32, 'movente', this.movingPlatformPool)
+    this.movingPlatform2.addMotionPath([
+      { x: "+0", xSpeed: 2000, xEase: "Linear", y: "+110", ySpeed: 2000, yEase: "Sine.easeIn" },
+      { x: "-0", xSpeed: 2000, xEase: "Linear", y: "-110", ySpeed: 2000, yEase: "Sine.easeOut" }
+    ])
+
+    this.movingPlatform3 = new MovingPlatform(this.game, 55*32, 40*32, 'movente', this.movingPlatformPool)
+    this.movingPlatform3.addMotionPath([
+      { x: "+110", xSpeed: 2000, xEase: "Linear", y: "-110", ySpeed: 2000, yEase: "Sine.easeIn" },
+      { x: "-110", xSpeed: 2000, xEase: "Linear", y: "-110", ySpeed: 2000, yEase: "Sine.easeIn" },
+      { x: "+110", xSpeed: 2000, xEase: "Linear", y: "+110", ySpeed: 2000, yEase: "Sine.easeOut" },
+      { x: "-110", xSpeed: 2000, xEase: "Linear", y: "+110", ySpeed: 2000, yEase: "Sine.easeIn" }
+    ])
+
+    this.movingPlatformPool.callAll('start')
+
+    // SPECIAL PLATFORMS - FALLING
+    this.fallingPlatformPool = this.add.physicsGroup()
+
+    this.fallingPlatform1 = new FallingPlatform(this.game, 41*32, 66*32, 'movente', this.fallingPlatformPool)
 
     // PLAYER COMMANDS
     commands = {
@@ -158,25 +188,52 @@ export default class Level1 extends Phaser.State {
     bomb = new Weapon(game, Bomb, 3, false, {bulletSpeed: 0, fireRate: 300, bulletType: 'bomb'}, 'Bomb');
 
     // IN GAME GUI
-    bombUI = new bombCounter(game)
+    bombUI = new BombCounter(game)
     game.add.existing(bombUI);
+  }
+
+  preRender() {
+    if (this.game.paused)
+    {
+        //  Because preRender still runs even if your game pauses!
+        return;
+    }
+
+    if (this.locked || this.wasLocked)
+    {
+        player.x += this.lockedTo.deltaX;
+        player.y = this.lockedTo.y - 35;
+
+        if (player.body.velocity.x !== 0)
+        {
+            player.body.velocity.y = 0;
+        }
+    }
+
+    if (this.wasLocked)
+    {
+        this.wasLocked = false;
+        this.lockedTo.playerLocked = false;
+        this.lockedTo = null;
+    }
   }
 
   update() {
     // PHYSIC COLLISIONS
-    game.physics.arcade.collide(player, layer);
-    game.physics.arcade.collide(biblePool, layer);
-    game.physics.arcade.collide(soulPool, layer);
-    game.physics.arcade.collide(ghostPool, layer);
-    game.physics.arcade.collide(bomb, layer);
-    game.physics.arcade.collide(gun, layer, function(bullet, layer){
+    this.game.physics.arcade.collide(player, layer);
+    this.game.physics.arcade.collide(biblePool, layer);
+    this.game.physics.arcade.collide(soulPool, layer);
+    this.game.physics.arcade.collide(ghostPool, layer);
+    this.game.physics.arcade.collide(bomb, layer);
+    this.game.physics.arcade.collide(gun, layer, function(bullet, layer){
       bullet.exists = false;
     });
-    // game.physics.arcade.collide(player, movingPlatformPool);
+    this.game.physics.arcade.collide(player, this.movingPlatformPool, this.customSep, null, this);
+    this.game.physics.arcade.collide(player, this.fallingPlatformPool, this.fallingPlatformCollide)
 
 
     // ITEMS
-    game.physics.arcade.overlap(player, biblePool, function(player, bible) {
+    this.game.physics.arcade.overlap(player, biblePool, function(player, bible) {
       bible.hit();
 
       if (numBombs <= 3) {
@@ -187,27 +244,28 @@ export default class Level1 extends Phaser.State {
 
 
     // PLAYER HIT
-    game.physics.arcade.overlap(player, soulPool, function(player, enemy){
+    this.game.physics.arcade.overlap(player, soulPool, function(player, enemy){
       player.hit(enemy);
     })
-    game.physics.arcade.overlap(player, ghostPool, function(player, enemy){
+    this.game.physics.arcade.overlap(player, ghostPool, function(player, enemy){
       player.hit(enemy);
     })
+    
     
     
     // ENEMY HIT
-    game.physics.arcade.overlap(gun, soulPool, function(bullet, enemy){
+    this.game.physics.arcade.overlap(gun, soulPool, function(bullet, enemy){
       enemy.hit(bullet);
       bullet.exists = false;
     })
-    game.physics.arcade.overlap(gun, ghostPool, function(bullet, enemy){
+    this.game.physics.arcade.overlap(gun, ghostPool, function(bullet, enemy){
       enemy.hit(bullet);
       bullet.exists = false;
     })
-    game.physics.arcade.overlap(bomb, soulPool, function(bullet, enemy){
+    this.game.physics.arcade.overlap(bomb, soulPool, function(bullet, enemy){
       enemy.hit(bullet);
     })
-    game.physics.arcade.overlap(bomb, ghostPool, function(bullet, enemy){
+    this.game.physics.arcade.overlap(bomb, ghostPool, function(bullet, enemy){
       enemy.hit(bullet);
     })
 
@@ -255,9 +313,18 @@ export default class Level1 extends Phaser.State {
       playerOldPos.y = player.body.y;
     }
 
+    if (this.locked) {
+        this.checkLock();
+    }
+
     // FLASHBACKS
-    if (player.x >= 45*32 && player.y <= 55*32 && flashbacks.uno) {
-      this.gameFlashback('testFlashback', 'uno')
+    // if (player.x >= 45*32 && player.y <= 55*32 && flashbacks.one) {
+    //   this.gameFlashback('testFlashback', 'one')
+    // }
+
+    if (player.x >= 93*32 && player.y <= 10*32) {
+      this.state.add('Level2', Level2)
+      this.state.start('Level2')
     }
   }
 
@@ -266,13 +333,13 @@ export default class Level1 extends Phaser.State {
     flashback = this.game.add.sprite(0,0, image);
     this.game.add.existing(flashback);
     flashback.fixedToCamera = true;
-    console.log(flashbacks.uno)
+    console.log(flashbacks.one)
     setTimeout(function(){
         this.game.paused = false;
         flashback.destroy();
     }.bind(this), 3000);
     flashbacks[index] = false;
-    console.log(flashbacks.uno)
+    console.log(flashbacks.one)
     this.game.paused = true;
   };
 
@@ -288,10 +355,43 @@ export default class Level1 extends Phaser.State {
     return released;
   };
 
-  // render() {
-  //   this.game.debug.start(32, 32);
-  //   this.game.debug.line(`Health: ${player.health}/${player.maxHealth}`);
-  //   this.game.debug.line(`Velocity: ${player.body.velocity.y}/${player.body.velocity.y}`);
-  // }
+  startLevel2() {
+    this.state.add('Level2', Level2)
+    this.state.start('Level2')
+  }
+
+
+  fallingPlatformCollide(player, platform) {
+    platform.initFalling()
+  }
+
+
+  customSep(player, platform) {
+    if (!this.locked && player.body.velocity.y > 0) {
+      this.locked = true;
+      this.lockedTo = platform;
+      platform.playerLocked = true;
+      player.body.velocity.y = 0;
+    }
+  }
+
+  checkLock() {
+    player.body.velocity.y = 0;
+
+    if (player.body.right < this.lockedTo.body.x || player.body.x > this.lockedTo.body.right || commands.spaceBar.isDown) {
+      this.cancelLock();
+    }
+  }
+
+  cancelLock() {
+    this.wasLocked = true;
+    this.locked = false;
+  }
+
+  render() {
+    this.game.debug.start(32, 32);
+    this.game.debug.line(`Health: ${player.health}/${player.maxHealth}`);
+    this.game.debug.line(`Velocity: ${player.body.velocity.y}`);
+  }
 
 }

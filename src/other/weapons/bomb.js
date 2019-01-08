@@ -37,8 +37,8 @@ export default class Bomb extends Phaser.Sprite {
       this.exploded = true;
       game.time.events.add(Phaser.Timer.SECOND * 0.0001, function(){
         // this.exists = false;
-        this.width = 150;
-        this.height = 150;
+        this.width = 128;
+        this.height = 128;
         this.alpha = 0;
         game.camera.shake(0.01, 300);
         let bombExplosion = new BombExplosion(this.game);
@@ -69,12 +69,9 @@ export default class Bomb extends Phaser.Sprite {
 
 export class BombExplosion extends Phaser.Sprite {
   constructor(game) {
-    super(game, 0, 0, 'kaboom');
+    super(game, 0, 0, 'bomb_explosion');
     this.exists = false;
     this.anchor.setTo(0.5, 0.5);
-
-    this.width = 150;
-    this.height = 150;
   }
 
   stdReset(x, y) {
@@ -83,11 +80,10 @@ export class BombExplosion extends Phaser.Sprite {
   }
 
   spawn(x, y, data) {
-    this.stdReset(x, y);
-    this.animations.add('kaboom');
-    this.play('kaboom', 30, false, true);
-    this.game.time.events.add(Phaser.Timer.SECOND * 3, function(){
-      this.exists = false;
-    }.bind(this))
+    this.stdReset(x, y)
+
+    this.animations.add('bomb_explosion', Phaser.Animation.generateFrameNames('bomb_explosion', 1, 16))
+
+    this.animations.play('bomb_explosion', 30, false, true)
   }
 }
