@@ -18,6 +18,11 @@ export default class Bullet extends Phaser.Sprite {
     this.scaleSpeed = 0;
 
     this.bulletType = bulletType
+
+    this.sfxBullet = this.game.add.audio('bullet')
+    this.game.sound.setDecodedCallback([ this.sfxBullet ], function(){
+      console.log('audio ready')
+    }, this);
   }
 
   fire(x, y, angle, speed, gx, gy) {
@@ -37,6 +42,8 @@ export default class Bullet extends Phaser.Sprite {
     };
 
     this.body.gravity.set(gx, gy);
+
+    this.sfxBullet.play()
   }
 
   update() {

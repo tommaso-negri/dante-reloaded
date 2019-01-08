@@ -72,9 +72,22 @@ export default class Level1 extends Phaser.State {
     game.load.image('level1BG2', 'assets/images/level1BGs/level1BG2.png');
     game.load.image('level1BG3', 'assets/images/level1BGs/level1BG3.png');
     game.load.image('level1BG4', 'assets/images/level1BGs/level1BG4.png');
+
+    // SFX
+    game.load.audio('explosion', 'assets/audio/sfx/explosion.mp3');
+    game.load.audio('bullet', 'assets/audio/sfx/bullet.mp3');
+    game.load.audio('bombCollection', 'assets/audio/sfx/bombCollection.mp3');
+    game.load.audio('hellBackground', 'assets/audio/sfx/hellBackground.mp3');
   }
 
   create() {
+    // SFX
+    this.sfxBombCollection = this.game.add.audio('bombCollection')
+    this.sfxHellBackground = this.game.add.audio('hellBackground')
+
+    this.game.time.events.loop(Phaser.Timer.SECOND * 15, function(){
+      this.sfxHellBackground.play()
+    }.bind(this))
 
     // PARALLAX
     this.parallax1 = this.game.add.tileSprite(0,
@@ -172,6 +185,7 @@ export default class Level1 extends Phaser.State {
     biblePool.create(36*32, 61*32);
     biblePool.create(7*32, 54*32);
     biblePool.create(46*32, 55*32);
+    biblePool.create(50*32, 55*32);
 
     // SOULS POOL
     soulPool = new Pool(game, Soul, 3, false, 'Souls');
@@ -234,13 +248,14 @@ export default class Level1 extends Phaser.State {
 
     // ITEMS
     this.game.physics.arcade.overlap(player, biblePool, function(player, bible) {
-      bible.hit();
 
-      if (numBombs <= 3) {
+      if (numBombs < 3) {
         numBombs++
+        bible.hit();
+        this.sfxBombCollection.play()
       }
       bombUI.dataGatering(numBombs);
-    });
+    }.bind(this));
 
 
     // PLAYER HIT

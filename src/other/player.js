@@ -16,7 +16,7 @@ export default class Player extends Phaser.Sprite {
       spawnX: 0,
       spawnY: 0,
       maxHealth: 100,
-      healthControll: 0,
+      healthControll: true,
       maxSpeed: 300,
       acceleration: 9800,
       onTheGround: null,
@@ -44,10 +44,16 @@ export default class Player extends Phaser.Sprite {
     // this.animations.add('jumpRight', [28,29,30,31,32,33], 15, true);
     // this.animations.add('jumpLeft', [0,1,2,3,4,5], 15, true);
 
-    this.animations.add('rightWalk', Phaser.Animation.generateFrameNames('Dante-RightWalk', 1, 10), 15, true)
+    this.animations.add('rightWalk', Phaser.Animation.generateFrameNames('Dante-RightWalk', 10, 1), 15, true)
     this.animations.add('leftWalk', Phaser.Animation.generateFrameNames('Dante-LeftWalk', 1, 10), 15, true)
 
     this.game.camera.follow(this, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
+
+    this.game.time.events.loop(Phaser.Timer.SECOND * 3, function(){
+      if (this.settings.healthControll) {
+        this.heal(10)
+      }
+    }.bind(this))
   }
 
   stdReset(x, y) {
@@ -69,33 +75,29 @@ export default class Player extends Phaser.Sprite {
       return
     }
 
-    this.settings.healthControll++;
+    this.settings.healthControll = false;
 
     if (enemy.key == 'ghost') {
       this.health -= this.vulnerabilities.ghost;
       this.invincible = true;
-      this.game.time.events.add(Phaser.Timer.SECOND * 1.2, function() {
-        this.invincible = false;
-      }.bind(this));
     }
 
     if (enemy.key == 'soul') {
       this.health -= this.vulnerabilities.soul;
       this.invincible = true;
-      this.game.time.events.add(Phaser.Timer.SECOND * 1.2, function() {
-        this.invincible = false;
-      }.bind(this));
     }
 
     if (enemy == 'gravity') {
       this.health -= this.vulnerabilities.gravity
       this.invincible = true;
-      this.game.time.events.add(Phaser.Timer.SECOND * 1.2, function() {
-        this.invincible = false;
-      }.bind(this));
     }
+
+    this.game.time.events.add(Phaser.Timer.SECOND * 1.2, function() {
+      this.invincible = false;
+      this.settings.healthControll = true;
+    }.bind(this));
     
-    if (this.health < 0) {
+    if (this.health <= 0) {
       this.dying = true;
       this.body.velocity.x = 0;
       this.body.velocity.y = 0;
@@ -125,16 +127,6 @@ export default class Player extends Phaser.Sprite {
     } else {
       this.alpha = 1;
     }
-
-    if(this.settings.healthControll) {
-      this.game.time.events.add(Phaser.Timer.SECOND * 5, function(){
-        if(!this.settings.healthControll) {
-          this.heal(10);
-        }
-      }.bind(this))
-    }
-
-    // this.settings.healthControll = false
 
     // PLAYER MOVEMENTS
     // if (this.commands.right.isDown && this.commands.left.isDown) {
@@ -219,6 +211,7 @@ export default class Player extends Phaser.Sprite {
 
     if (this.settings.fallDamage && (this.body.onFloor() || this.body.touching.down)) {
       this.hit('gravity')
+      this.settings.fallDamage = false
     }
     
   }

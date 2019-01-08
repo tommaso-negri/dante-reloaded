@@ -72,6 +72,11 @@ export class BombExplosion extends Phaser.Sprite {
     super(game, 0, 0, 'bomb_explosion');
     this.exists = false;
     this.anchor.setTo(0.5, 0.5);
+
+    this.sfxExplosion = this.game.add.audio('explosion');
+    this.game.sound.setDecodedCallback([ this.sfxExplosion ], function(){
+      console.log('audio ready')
+    }, this);
   }
 
   stdReset(x, y) {
@@ -85,5 +90,7 @@ export class BombExplosion extends Phaser.Sprite {
     this.animations.add('bomb_explosion', Phaser.Animation.generateFrameNames('bomb_explosion', 1, 16))
 
     this.animations.play('bomb_explosion', 30, false, true)
+
+    this.sfxExplosion.play()
   }
 }
