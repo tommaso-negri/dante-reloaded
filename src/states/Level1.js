@@ -50,8 +50,9 @@ export default class Level1 extends Phaser.State {
   }
 
   preload() {
-    game.load.tilemap('Level1Map', 'assets/tilemaps/level1/Level1Map.json', null, Phaser.Tilemap.TILED_JSON);
-    game.load.image('tiles', 'assets/tilemaps/level1/TileOk.png');
+    game.load.tilemap('level1Map', 'assets/tilemaps/level1/Level1Map.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.image('level1Tileset', 'assets/tilemaps/level1/Level1Tileset.png');
+    // game.load.image('tilesRed', 'assets/tilemaps/level2/TilesRed.png');
     // game.load.spritesheet('playerSprite', 'assets/sprites/player.png', 51, 71)
     game.load.image('bullet', 'assets/sprites/bullet.png');
 
@@ -85,51 +86,88 @@ export default class Level1 extends Phaser.State {
     this.sfxBombCollection = this.game.add.audio('bombCollection')
     this.sfxHellBackground = this.game.add.audio('hellBackground')
 
-    this.game.time.events.loop(Phaser.Timer.SECOND * 15, function(){
-      this.sfxHellBackground.play()
-    }.bind(this))
+    // this.game.time.events.loop(Phaser.Timer.SECOND * 15, function(){
+    //   this.sfxHellBackground.play()
+    // }.bind(this))
 
     // PARALLAX
+    console.log(this.game.height)
     this.parallax1 = this.game.add.tileSprite(0,
-        this.game.height - this.game.cache.getImage('level1BG1').height,
-        this.game.width,
+      this.game.height - 568,
+        this.game.cache.getImage('level1BG1').width,
         this.game.cache.getImage('level1BG1').height,
         'level1BG1'
     );
     this.parallax2 = this.game.add.tileSprite(0,
-        this.game.height - this.game.cache.getImage('level1BG2').height,
-        this.game.width,
+      this.game.height - 568,
+        this.game.cache.getImage('level1BG2').width,
         this.game.cache.getImage('level1BG2').height,
         'level1BG2'
     );
     this.parallax3 = this.game.add.tileSprite(0,
-        this.game.height - this.game.cache.getImage('level1BG3').height,
-        this.game.width,
+      this.game.height - 568,
+        this.game.cache.getImage('level1BG3').width,
         this.game.cache.getImage('level1BG3').height,
         'level1BG3'
     );
     this.parallax4 = this.game.add.tileSprite(0,
-        this.game.height - this.game.cache.getImage('level1BG4').height,
-        this.game.width,
+      this.game.height - 568,
+        this.game.cache.getImage('level1BG4').width,
         this.game.cache.getImage('level1BG4').height,
         'level1BG4'
     );
-    this.parallax1.fixedToCamera =  true;
-    this.parallax2.fixedToCamera =  true;
-    this.parallax3.fixedToCamera =  true;
-    this.parallax4.fixedToCamera =  true;
+
+    this.parallax1.anchor
+
+    // this.parallax1 = this.game.add.tileSprite(0,
+    //     this.game.height - this.game.cache.getImage('level1BG1').height,
+    //     this.game.width,
+    //     this.game.cache.getImage('level1BG1').height,
+    //     'level1BG1'
+    // );
+    // this.parallax2 = this.game.add.tileSprite(0,
+    //     this.game.height - this.game.cache.getImage('level1BG2').height,
+    //     this.game.width,
+    //     this.game.cache.getImage('level1BG2').height,
+    //     'level1BG2'
+    // );
+    // this.parallax3 = this.game.add.tileSprite(0,
+    //     this.game.height - this.game.cache.getImage('level1BG3').height,
+    //     this.game.width,
+    //     this.game.cache.getImage('level1BG3').height,
+    //     'level1BG3'
+    // );
+    // this.parallax4 = this.game.add.tileSprite(0,
+    //     this.game.height - this.game.cache.getImage('level1BG4').height,
+    //     this.game.width,
+    //     this.game.cache.getImage('level1BG4').height,
+    //     'level1BG4'
+    // );
+    // this.parallax1.fixedToCamera =  true;
+    // this.parallax2.fixedToCamera =  true;
+    // this.parallax3.fixedToCamera =  true;
+    // this.parallax4.fixedToCamera =  true;
     
     // this.parallax3.cameraOffset.y = 0;
 
     // WORLD, MAP, TILESET
     game.physics.startSystem(Phaser.Physics.ARCADE)
-    game.world.setBounds(0, 0, 96*32, 72*32)
+    // game.world.setBounds(0, 0, 102*32, 78*32)
 
-    map = game.add.tilemap('Level1Map')
-    map.addTilesetImage('TileOk', 'tiles')
+    // map = game.add.tilemap('level2Map')
+    // map.addTilesetImage('grigio', 'tilesGrey')
+    // map.addTilesetImage('Rosso', 'tilesRed')
+    // layer = map.createLayer('Tile Layer 1')
+    // // map.setCollision(355)
+    // map.setCollisionBetween(1,676)
+
+    map = game.add.tilemap('level1Map')
+    map.addTilesetImage('Rosso', 'level1Tileset')
     layer = map.createLayer('Tile Layer 1')
     // map.setCollision(1)
-    map.setCollisionBetween(1,49)
+    map.setCollisionBetween(1,2704)
+
+    layer.resizeWorld();
 
     // SPECIAL PLATFORMS - MOVING
     this.movingPlatformPool = this.add.physicsGroup()
@@ -178,7 +216,7 @@ export default class Level1 extends Phaser.State {
     // PLAYER
     player = new Player(game, commands);
     game.add.existing(player);
-    player.spawn(1*32, 69*32);
+    player.spawn(5*32, 23*32);
 
     // BIBLES POOL
     biblePool = new Pool(game, Bible, 2, true, 'Bibles');
@@ -309,19 +347,19 @@ export default class Level1 extends Phaser.State {
 
 
     // PARALLAX
-    if (playerOldPos.x > player.body.x) {
-      this.parallax1.tilePosition.x += 0.1;
-      this.parallax2.tilePosition.x += 0.8;
-      this.parallax3.tilePosition.x += 1.2;
-      this.parallax4.tilePosition.x += 1.6;
-    }
+    // if (playerOldPos.x > player.body.x) {
+    //   this.parallax1.tilePosition.x += 0.1;
+    //   this.parallax2.tilePosition.x += 0.8;
+    //   this.parallax3.tilePosition.x += 1.2;
+    //   this.parallax4.tilePosition.x += 1.6;
+    // }
 
-    if (playerOldPos.x < player.body.x) {
-      this.parallax1.tilePosition.x -= 0.1;
-      this.parallax2.tilePosition.x -= 0.8;
-      this.parallax3.tilePosition.x -= 1.2;
-      this.parallax4.tilePosition.x -= 1.6;
-    }
+    // if (playerOldPos.x < player.body.x) {
+    //   this.parallax1.tilePosition.x -= 0.1;
+    //   this.parallax2.tilePosition.x -= 0.8;
+    //   this.parallax3.tilePosition.x -= 1.2;
+    //   this.parallax4.tilePosition.x -= 1.6;
+    // }
 
     if (player.body.velocity.x != 0 || player.body.y != 0) {
       playerOldPos.x = player.body.x;

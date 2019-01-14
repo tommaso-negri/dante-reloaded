@@ -43,7 +43,7 @@ export default class Ripper extends Enemy {
 /* The update method will be called automatically by Phaser, just as in the pure Phaser.Sprite class */
   update() {
     if(!this.stdUpdate()){return;}; // Do a standard update from Enemy class to check if update should even be done
-    this.game.physics.arcade.collide(this, this.game.collisionLayer);
+    this.game.physics.ninja.collide(this, this.game.collisionLayer);
     if (this.body.blocked.right) {
       this.scale.x = -1;
       this.body.velocity.x = -this.speed;
