@@ -117,8 +117,6 @@ export default class Level1 extends Phaser.State {
         'level1BG4'
     );
 
-    this.parallax1.anchor
-
     // this.parallax1 = this.game.add.tileSprite(0,
     //     this.game.height - this.game.cache.getImage('level1BG1').height,
     //     this.game.width,
