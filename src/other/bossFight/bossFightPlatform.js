@@ -16,7 +16,14 @@ export default class BossFightPlatform extends Phaser.Sprite {
 
   disappear() {
     this.exists = false
-    this.game.time.events.add(Phaser.Timer.SECOND * 2, function(){
+  }
+
+  appearInstatly() {
+    this.exists = true
+  }
+
+  appear(delay) {
+    this.game.time.events.add(Phaser.Timer.SECOND * (7 - (1 * delay)), function(){
       this.exists = true
     }.bind(this))
   }

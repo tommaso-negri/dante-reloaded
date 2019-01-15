@@ -8,6 +8,8 @@ export default class BossFightButton extends Phaser.Sprite {
     this.body.allowGravity = false
     this.body.immovable = true
 
+    this.alpha = 0
+
     this.enabled = false
   }
 
@@ -24,5 +26,9 @@ export default class BossFightButton extends Phaser.Sprite {
   disable() {
     this.loadTexture('bossFightButtonPressed')
     this.enabled = false
+  }
+
+  show() {
+    this.alpha = 1
   }
 }

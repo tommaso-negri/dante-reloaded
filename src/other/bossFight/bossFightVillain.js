@@ -1,6 +1,6 @@
-export default class BossFightTarget extends Phaser.Sprite {
+export default class BossFightVillain extends Phaser.Sprite {
   constructor(game) {
-    super(game, 0, 0, 'bossFightTarget')
+    super(game, 0, 0, 'bossFightVillain')
     this.exists = false
 
     // BODY
@@ -12,7 +12,6 @@ export default class BossFightTarget extends Phaser.Sprite {
     this.body.allowGravity = false
     this.body.immovable = false
     this.body.velocity.y = 0
-    
   }
 
   spawn(x, y) {
