@@ -1,6 +1,6 @@
 import Phaser from 'phaser-ce'
 
-import Level1B from './Level1B'
+import Level2 from './Level2'
 
 // PLAYER
 import Player from '../other/player'
@@ -84,9 +84,6 @@ export default class Level1 extends Phaser.State {
     // game.load.audio('bullet', 'assets/audio/sfx/bullet.mp3');
     // game.load.audio('bombCollection', 'assets/audio/sfx/bombCollection.mp3');
     // game.load.audio('hellBackground', 'assets/audio/sfx/hellBackground.mp3');
-
-    this.game.state.add('Level1B', Level1B)
-    // this.state.add('Level1B', Level1B)
   }
 
   create() {
@@ -371,10 +368,6 @@ export default class Level1 extends Phaser.State {
         this.parallax3.tilePosition.x -= 1.2;
         this.parallax4.tilePosition.x -= 1.6;
       }
-    }
-
-    if (player.position.x > 88*32) {
-      this.state.start('Level1B')
     }
 
     if (player.body.velocity.x != 0 || player.body.y != 0) {
