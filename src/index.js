@@ -4,12 +4,17 @@ import Phaser from 'expose-loader?Phaser!phaser-ce/build/custom/phaser-split.js'
 
 import config from './config/config'
 import Level1 from './states/Level1'
+import LevelF from './states/LevelF'
+
+import Boot from './states/Boot'
 
 class Game extends Phaser.Game {
   constructor() {
     super(config)
-    this.state.add('Level1', Level1)
-    this.state.start('Level1')
+    this.state.add('Boot', Boot)
+    this.state.start('Boot')
+    // this.state.add('Level1', Level1)
+    // this.state.start('Level1')
   }
 }
 
