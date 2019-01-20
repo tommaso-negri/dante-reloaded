@@ -6,10 +6,10 @@ import Bomb from '../../other/weapons/bomb'
 import Ghost from '../../other/enemies/ghost'
 import Soul from '../../other/enemies/soul'
 import Bible from '../../other/bible'
+import Stairs from '../../other/stairs'
+import Pool from '../../other/pool'
 
 import L1S2 from './L1S2'
-
-var MAP_OBJECTS_INDEX = [8736, 8737, 8738, 8739, 8740];
 
 export default class L1S1 extends Phaser.State {
   constructor() {
@@ -34,66 +34,49 @@ export default class L1S1 extends Phaser.State {
     /******* PARALLAX BGs *******/
     this.parallax1 = this.game.add.tileSprite(0,
       this.game.height - this.game.cache.getImage('l1s1BG_1').height,
-      this.game.width,
+      this.game.cache.getImage('l1s1BG_1').width,
       this.game.cache.getImage('l1s1BG_1').height,
       'l1s1BG_1'
     );
     this.parallax2 = this.game.add.tileSprite(0,
         this.game.height - this.game.cache.getImage('l1s1BG_2').height,
-        this.game.width,
+        this.game.cache.getImage('l1s1BG_2').width,
         this.game.cache.getImage('l1s1BG_2').height,
         'l1s1BG_2'
     );
     this.parallax3 = this.game.add.tileSprite(0,
         this.game.height - this.game.cache.getImage('l1s1BG_3').height,
-        this.game.width,
+        this.game.cache.getImage('l1s1BG_3').width,
         this.game.cache.getImage('l1s1BG_3').height,
         'l1s1BG_3'
     );
     this.parallax4 = this.game.add.tileSprite(0,
         this.game.height - this.game.cache.getImage('l1s1BG_4').height,
-        this.game.width,
+        this.game.cache.getImage('l1s1BG_4').width,
         this.game.cache.getImage('l1s1BG_4').height,
         'l1s1BG_4'
     );
-    this.parallax1.fixedToCamera =  true;
-    this.parallax2.fixedToCamera =  true;
-    this.parallax3.fixedToCamera =  true;
-    this.parallax4.fixedToCamera =  true;
 
-    /******* WORLD, MAP, TILESET *******/
+    /******* WORLD *******/
     this.game.physics.startSystem(Phaser.Physics.ARCADE)
     this.game.world.setBounds(0, 0, 96*32, 24*32)
+
+    /******* TILEMAP CUSTOM LAYERS *******/
     this.map = this.game.add.tilemap('l1s1Map')
     this.map.addTilesetImage('l1s1Tileset', 'l1s1Tileset')
-
-    // TEST
-    // setting up layers for the tilemap.
-    this.map.myLayers = [];
-    // multilayered-plataformer tilemap has 4 layers named:
-    //     layer1, layer2, layer3 and layer4
+    this.map.customLayers = [];
+    this.MAP_OBJECTS_INDEX = [307];
     for (let i=4; i>0; i--) {
-        let layer = this.map.createLayer('layer' + i);
-        // enabling collisions for this layer
-        this.game.physics.arcade.enable(layer);
-        // setting collision for one different item at each layer.
-        this.map.setCollisionByExclusion([MAP_OBJECTS_INDEX[i-1]], true, layer);
-        // this.map.setCollisionBetween(1,9216)
-        // setting a different transparency to each layer
-        layer.alpha = (5-i)/4;
-        this.map.myLayers[i-1] = layer;
+      let layer = this.map.createLayer('layer' + i)
+      this.game.physics.arcade.enable(layer)
+      this.map.setCollisionByExclusion(this.MAP_OBJECTS_INDEX, true, layer)
+      this.map.customLayers[i-1] = layer
     }
-    // END TEST
-  
-    // this.layer2 = this.map.createLayer('Spikes')
-    // this.layer = this.map.createLayer('Terrain')
-    // this.layer3 = this.map.createLayer('Water&Spears')
-    // this.layer4 = this.map.createLayer('Decorations')
-    // map.setCollision(1)
-    // this.map.setCollisionBetween(1,9216)
-    // this.layer.resizeWorld();
 
-    // this.game.physics.arcade.enable(this.layer2, Phaser.Physics.ARCADE, true)
+    /******* STAIRS *******/
+    this.stairsPool = new Pool(this.game, Stairs, 3, true, 'Stairs')
+    this.stairsPool.create(88*32, 22*32)
+    // this.stairsPool.create(7*32, -6*32)
 
     /******* PLAYER *******/
     // PLAYER COMMANDS
@@ -112,35 +95,25 @@ export default class L1S1 extends Phaser.State {
     // PLAYER
     this.player = new Player(this.game, this.commands)
     this.game.add.existing(this.player)
-    this.player.spawn(1*32, 17*32)
+    this.player.spawn(2*32, 17*32)
   }
 
   update() {
-    // this.game.physics.arcade.collide(this.player, this.layer);
-    // this.game.physics.arcade.collide(this.player, this.layer2, function(){
-    //   console.log('hello')
-    // });
-
-    if (this.player.position.x > 89*32) {
-      this.state.add('L1S2', L1S2)
-      this.state.start('L1S2')
-    }
-
     /******* PARALLAX BGs *******/
     // PARALLAX
-    if (this.player.position.x > 8*32) {
+    if (this.player.position.x > 15*32 && this.player.position.x < 81*32) {
       if (this.playerOldPos.x > this.player.body.x) {
-        this.parallax1.tilePosition.x += 0.1;
-        this.parallax2.tilePosition.x += 0.8;
-        this.parallax3.tilePosition.x += 1.2;
-        this.parallax4.tilePosition.x += 1.6;
+        this.parallax1.tilePosition.x += 0.0;
+        this.parallax2.tilePosition.x += 0.05;
+        this.parallax3.tilePosition.x += 0.1;
+        this.parallax4.tilePosition.x += 0.2;
       }
   
       if (this.playerOldPos.x < this.player.body.x) {
-        this.parallax1.tilePosition.x -= 0.1;
-        this.parallax2.tilePosition.x -= 0.8;
-        this.parallax3.tilePosition.x -= 1.2;
-        this.parallax4.tilePosition.x -= 1.6;
+        this.parallax1.tilePosition.x -= 0.0;
+        this.parallax2.tilePosition.x -= 0.05;
+        this.parallax3.tilePosition.x -= 0.1;
+        this.parallax4.tilePosition.x -= 0.2;
       }
     }
     // UPDATE PLAYER OLD POSITION
@@ -149,18 +122,39 @@ export default class L1S1 extends Phaser.State {
       this.playerOldPos.y = this.player.body.y;
     }
 
-    // TEST
+    /******* TILEMAP CUSTOM LAYERS *******/
     for (let i=0; i<4; i++) {
-      this.game.physics.arcade.collide(this.map.myLayers[i], this.player, this.collisionHandler(i));
+      if (i == 0) {
+        this.game.physics.arcade.collide(this.map.customLayers[i], this.player, this.collisionHandler(i))
+      }
+      if (i == 1) {
+        this.game.physics.arcade.collide(this.map.customLayers[i], this.player, this.collisionHandler(i))
+      }
     }
-    // END TEST
 
+    /******* STAIRS *******/
+    this.game.physics.arcade.overlap(this.player, this.stairsPool, function(player, stairs){
+      player.onStairs()
+    })
+
+    /******* NEXT LEVEL *******/
+    if (this.player.position.x < 90*32 && this.player.position.x > 85*32 && this.player.position.y > 24*32) {
+      this.state.add('L1S2', L1S2)
+      this.state.start('L1S2')
+    }
+
+  }
+
+  render() {
+    this.game.debug.start(32, 32);
+    this.game.debug.line(`Health: ${this.player.health}/${this.player.maxHealth}`);
+    this.game.debug.line(`Velocity: ${this.player.body.velocity.y}`);
   }
 
   collisionHandler(index) {
     return function (sprite, layer) {
       console.log(index)
-    };
-  };
+    }
+  }
 
 }

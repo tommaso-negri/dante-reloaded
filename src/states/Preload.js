@@ -45,7 +45,7 @@ export default class Preload extends Phaser.State {
 
     /******* ASSETS - PLAYER *******/
     // this.game.load.atlas('player', 'assets/sprites/player/player.png', 'assets/sprites/player/player.json')
-    this.game.load.spritesheet('player', 'assets/sprites/omino.png', 51, 71)
+    this.game.load.spritesheet('player', 'assets/sprites/danteRGB.png', 40, 54.98)
 
     /******* ASSETS - ENEMIES *******/
     this.game.load.image('ghost', 'assets/images/ghost.png')
@@ -93,6 +93,7 @@ export default class Preload extends Phaser.State {
     this.game.load.image('gameTitleBG', 'assets/images/GameTitle.jpeg')
 
     /******* ASSETS - OTHER *******/
+    this.game.load.image('stairs', 'assets/sprites/stairs.png')
     this.game.load.image('movente', 'assets/sprites/movingPlatform.png')
     this.game.load.image('testFlashback', 'assets/images/testFlashback.png')
   }

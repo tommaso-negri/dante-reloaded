@@ -30,18 +30,16 @@ export default class L2S2 extends Phaser.State {
     /******* PARALLAX BGs *******/
     this.parallax1 = this.game.add.tileSprite(0,
       this.game.height - this.game.cache.getImage('l2s2BG_1').height,
-      this.game.width,
+      this.game.cache.getImage('l2s2BG_1').width,
       this.game.cache.getImage('l2s2BG_1').height,
       'l2s2BG_1'
     );
     this.parallax2 = this.game.add.tileSprite(0,
         this.game.height - this.game.cache.getImage('l2s2BG_2').height,
-        this.game.width,
+        this.game.cache.getImage('l2s2BG_2').width,
         this.game.cache.getImage('l2s2BG_2').height,
         'l2s2BG_2'
     );
-    this.parallax1.fixedToCamera =  true;
-    this.parallax2.fixedToCamera =  true;
 
     /******* WORLD *******/
     this.game.physics.startSystem(Phaser.Physics.ARCADE)
@@ -80,19 +78,17 @@ export default class L2S2 extends Phaser.State {
   }
 
   update() {
-    this.game.physics.arcade.collide(this.player, this.layer);
-
     /******* PARALLAX BGs *******/
     // PARALLAX
-    if (this.player.position.x > 8*32) {
+    if (this.player.position.x > 15*32 && this.player.position.x < 81*32) {
       if (this.playerOldPos.x > this.player.body.x) {
-        this.parallax1.tilePosition.x += 0.1;
-        this.parallax2.tilePosition.x += 0.8;
+        this.parallax1.tilePosition.x += 0.0;
+        this.parallax2.tilePosition.x += 0.1;
       }
   
       if (this.playerOldPos.x < this.player.body.x) {
-        this.parallax1.tilePosition.x -= 0.1;
-        this.parallax2.tilePosition.x -= 0.8;
+        this.parallax1.tilePosition.x -= 0.0;
+        this.parallax2.tilePosition.x -= 0.1;
       }
     }
     // UPDATE PLAYER OLD POSITION

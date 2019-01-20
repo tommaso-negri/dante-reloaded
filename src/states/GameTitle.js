@@ -11,7 +11,7 @@ export default class GameTitle extends Phaser.State {
   }
 
   preload() {
-    this.state.add('L1S3', L1S3)
+    this.state.add('L1S1', L1S1)
   }
 
   create() {
@@ -52,6 +52,7 @@ export default class GameTitle extends Phaser.State {
   }
 
   onClick() {
+    this.state.start('L1S1')
     this.game.add.tween(this.gameTitleBG).to({ alpha: 0 }, 500, "Linear", true)
     this.notice.destroy()
     this.charactersImageAnimIn.start()
@@ -65,7 +66,7 @@ export default class GameTitle extends Phaser.State {
 
         this.game.time.events.add(Phaser.Timer.SECOND * 0.3, function(){
           this.commandsImageAnimOut.start()
-          this.state.start('L1S3')
+          this.state.start('L1S1')
         }, this)
 
       }, this)

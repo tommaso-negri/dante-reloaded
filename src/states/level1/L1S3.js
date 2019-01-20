@@ -6,6 +6,8 @@ import Bomb from '../../other/weapons/bomb'
 import Ghost from '../../other/enemies/ghost'
 import Soul from '../../other/enemies/soul'
 import Bible from '../../other/bible'
+import Stairs from '../../other/stairs'
+import Pool from '../../other/pool';
 
 export default class L1S3 extends Phaser.State {
   constructor() {
@@ -52,10 +54,6 @@ export default class L1S3 extends Phaser.State {
         this.game.cache.getImage('l1s3BG_4').height,
         'l1s3BG_4'
     );
-    // this.parallax1.fixedToCamera =  true;
-    // this.parallax2.fixedToCamera =  true;
-    // this.parallax3.fixedToCamera =  true;
-    // this.parallax4.fixedToCamera =  true;
 
     /******* WORLD *******/
     this.game.physics.startSystem(Phaser.Physics.ARCADE)
@@ -72,6 +70,11 @@ export default class L1S3 extends Phaser.State {
       this.map.setCollisionByExclusion(this.MAP_OBJECTS_INDEX, true, layer)
       this.map.customLayers[i-1] = layer
     }
+
+    /******* STAIRS *******/
+    this.stairsPool = new Pool(this.game, Stairs, 3, true, 'Stairs')
+    this.stairsPool.create(7*32, -2*32)
+    this.stairsPool.create(7*32, -6*32)
 
     /******* PLAYER *******/
     // PLAYER COMMANDS
@@ -90,15 +93,13 @@ export default class L1S3 extends Phaser.State {
     // PLAYER
     this.player = new Player(this.game, this.commands)
     this.game.add.existing(this.player)
-    this.player.spawn(7*32, 2*32)
+    this.player.spawn(7*32, -3*32)
   }
 
   update() {
-    this.game.physics.arcade.collide(this.player, this.layer)
-
     /******* PARALLAX BGs *******/
     // PARALLAX
-    if (this.player.position.x > 8*32) {
+    if (this.player.position.x > 15*32 && this.player.position.x < 81*32) {
       if (this.playerOldPos.x > this.player.body.x) {
         this.parallax1.tilePosition.x += 0.0;
         this.parallax2.tilePosition.x += 0.1;
@@ -127,6 +128,17 @@ export default class L1S3 extends Phaser.State {
       if (i == 1) {
         this.game.physics.arcade.collide(this.map.customLayers[i], this.player, this.collisionHandler(i))
       }
+    }
+
+    /******* STAIRS *******/
+    this.game.physics.arcade.overlap(this.player, this.stairsPool, function(player, stairs){
+      player.onStairs()
+    })
+
+    /******* NEXT LEVEL *******/
+    if (this.player.position.x < 10*32 && this.player.position.x > 5*32 && this.player.position.y > 24*32) {
+      this.state.add('L1S3', L1S3)
+      this.state.start('L1S3')
     }
 
   }
