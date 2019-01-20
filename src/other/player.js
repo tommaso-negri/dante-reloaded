@@ -28,7 +28,7 @@ export default class Player extends Phaser.Sprite {
 
     this.game.physics.enable(this);
     this.body.gravity.y = 650;
-    this.body.collideWorldBounds = true;
+    this.body.collideWorldBounds = false;
     this.body.bounce.y = 0.1;
     this.body.linearDamping = 1;
     this.body.allowGravity = true;
@@ -150,10 +150,14 @@ export default class Player extends Phaser.Sprite {
     } else {
       this.animations.stop('right');
       this.animations.stop('left')
+      if (this.positionControll == 'left') {
+        this.frame = 10
+      } else {
+        this.frame = 0
+      }
       // this.animations.stop('rightWalk');
       // this.animations.stop('leftWalk')
       // this.frameName = 'Dante-RightWalk10'
-      this.frame = 0
       this.body.acceleration.x = 0;
       this.body.velocity.x = 0;
     }
