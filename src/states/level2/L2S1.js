@@ -259,7 +259,7 @@ export default class L2S1 extends Phaser.State {
 
     /******* LUCIFERO *******/
     if (this.player.position.x > 2*32 && this.player.position.x < 7*32 && this.player.position.y > 9*32 && this.player.position.y < 13*32) {
-      if (!this.luciferoMet) {
+      if (localStorage.getItem('dialog2') == 'false') {
         this.luciferoAppears()
       }
     }
@@ -316,7 +316,7 @@ export default class L2S1 extends Phaser.State {
                 this.luciferoAnimOut.start()
                 this.player.settings.acceleration = 9800
                 this.player.frame = 14
-                this.luciferoMet = true
+                localStorage.setItem('dialog2', 'true')
               }, this)
             }, this)
           }, this)

@@ -19,6 +19,8 @@ export default class GameTitle extends Phaser.State {
   create() {
     this.creditsControll = false
     localStorage.setItem('numBombs', `${0}`)
+    localStorage.setItem('dialog1', 'false')
+    localStorage.setItem('dialog2', 'false')
 
     /******* GAME TITLE BG *******/
     this.gameTitleBG = this.game.add.image(0, 0, 'gameTitleBG')

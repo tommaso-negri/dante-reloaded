@@ -23,7 +23,6 @@ export default class L1S1 extends Phaser.State {
       x: 0,
       y: 0
     }
-    this.dialogMet = false
     this.numBombs = localStorage.getItem('numBombs')
     this.bombDropping = false
 
@@ -241,7 +240,7 @@ export default class L1S1 extends Phaser.State {
     }
 
     /******* DIALOGS *******/
-    if (!this.dialogMet) {
+    if (localStorage.getItem('dialog1') == 'false') {
       this.game.time.events.add(Phaser.Timer.SECOND * 1, function(){
         this.dia1_1.alpha = 1
 
@@ -260,7 +259,7 @@ export default class L1S1 extends Phaser.State {
         }, this)
       }, this)
 
-      this.dialogMet = true
+      localStorage.setItem('dialog1', 'true')
     }
 
     /******* STAIRS *******/

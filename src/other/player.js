@@ -1,5 +1,4 @@
 import L1S1 from '../states/level1/L1S1'
-import GameTitle from '../states/GameTitle';
 
 export default class Player extends Phaser.Sprite {
   constructor(game, commands) {
@@ -122,8 +121,9 @@ export default class Player extends Phaser.Sprite {
       this.imageFinal.fixedToCamera = true
 
       this.game.time.events.add(Phaser.Timer.SECOND * 3, function(){
-        this.game.state.add('gameTitle', GameTitle)
-        this.game.state.start('gameTitle')
+        localStorage.setItem('numBombs', `${0}`)
+        this.game.state.add('L1S1', L1S1)
+        this.game.state.start('L1S1')
       }, this)
     }, this)
     // setTimeout(function(){
