@@ -105,16 +105,16 @@ export default class L1S3 extends Phaser.State {
 
     /******* BIBLES *******/
     this.biblePool = new Pool(game, Bible, 2, true, 'Bibles');
-    this.biblePool.create(7*32, 15*32);
-    this.biblePool.create(10*32, 12*32);
+    this.biblePool.create(40*32, 2*32);
+    this.biblePool.create(77*32, 7*32);
 
     /******* ENEMIES *******/
     // SKULLS
     this.skullPool = new Pool(this.game, Skull, 5, true, 'Skulls')
-    this.skullPool.create(2*32, 5*32, {patrollL: 2*32, patrollR: 7*32});
+    this.skullPool.create(19*32, 15*32, {patrollL: 19*32, patrollR: 22*32});
     // GHOSTS
     this.ghostPool = new Pool(this.game, Ghost, 5, true, 'Ghosts')
-    this.ghostPool.create(39*32, 2*32, {patrollL: 39*32, patrollR: 43*32});
+    this.ghostPool.create(34*32, 18*32, {patrollL: 34*32, patrollR: 41*32});
 
     /******* WEAPONS *******/
     // GUN

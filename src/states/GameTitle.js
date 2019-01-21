@@ -13,7 +13,7 @@ export default class GameTitle extends Phaser.State {
   }
 
   preload() {
-    this.state.add('L1S1', L1S1)
+    this.state.add('L2S3', L2S3)
   }
 
   create() {
