@@ -118,19 +118,22 @@ export default class L2S3 extends Phaser.State {
 
     /******* BIBLES *******/
     this.biblePool = new Pool(game, Bible, 2, true, 'Bibles');
-    this.biblePool.create(7*32, 15*32);
-    this.biblePool.create(10*32, 12*32);
+    this.biblePool.create(18*32, 11*32);
+    this.biblePool.create(91*32, 11*32);
+    // this.biblePool.create(10*32, 12*32);
 
     /******* ENEMIES *******/
     // SKULLS
-    this.skullPool = new Pool(this.game, Skull, 5, true, 'Skulls')
-    this.skullPool.create(2*32, 5*32, {patrollL: 2*32, patrollR: 7*32});
+    // this.skullPool = new Pool(this.game, Skull, 5, true, 'Skulls')
+    // this.skullPool.create(9*32, 13*32, {patrollL: 9*32, patrollR: 11*32});
     // GHOSTS
     this.ghostPool = new Pool(this.game, Ghost, 5, true, 'Ghosts')
-    this.ghostPool.create(39*32, 2*32, {patrollL: 39*32, patrollR: 43*32});
+    this.ghostPool.create(9*32, 13*32, {patrollL: 9*32, patrollR: 11*32});
+    this.ghostPool.create(82*32, 10*32, {patrollL: 81*32, patrollR: 85*32});
     // DEVIL
     this.devilPool = new Pool(this.game, Devil, 5, true, 'Devils')
-    this.devilPool.create(2*32, 5*32, {patrollL: 2*32, patrollR: 6*32});
+    this.devilPool.create(11*32, 21*32, {patrollL: 10*32, patrollR: 13*32});
+    this.devilPool.create(60*32, 15*32, {patrollL: 60*32, patrollR: 62*32});
 
     /******* WEAPONS *******/
     // GUN

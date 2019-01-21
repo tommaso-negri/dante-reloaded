@@ -101,19 +101,20 @@ export default class L2S1 extends Phaser.State {
 
     /******* BIBLES *******/
     this.biblePool = new Pool(game, Bible, 2, true, 'Bibles');
-    this.biblePool.create(7*32, 15*32);
-    this.biblePool.create(10*32, 12*32);
+    this.biblePool.create(20*32, 21*32);
+    this.biblePool.create(76*32, 11*32);
 
     /******* ENEMIES *******/
-    // SKULLS
-    this.skullPool = new Pool(this.game, Skull, 5, true, 'Skulls')
-    this.skullPool.create(2*32, 5*32, {patrollL: 2*32, patrollR: 7*32});
+    // // SKULLS
+    // this.skullPool = new Pool(this.game, Skull, 5, true, 'Skulls')
+    // this.skullPool.create(2*32, 5*32, {patrollL: 2*32, patrollR: 7*32});
     // GHOSTS
     this.ghostPool = new Pool(this.game, Ghost, 5, true, 'Ghosts')
-    this.ghostPool.create(39*32, 2*32, {patrollL: 39*32, patrollR: 43*32});
+    this.ghostPool.create(13*32, 17*32, {patrollL: 12*32, patrollR: 16*32});
+    this.ghostPool.create(61*32, 14*32, {patrollL: 61*32, patrollR: 67*32});
     // DEVIL
     this.devilPool = new Pool(this.game, Devil, 5, true, 'Devils')
-    this.devilPool.create(2*32, 5*32, {patrollL: 2*32, patrollR: 6*32});
+    this.devilPool.create(37*32, 14*32, {patrollL: 37*32, patrollR: 39*32});
 
     /******* WEAPONS *******/
     // GUN
