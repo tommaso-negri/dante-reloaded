@@ -121,7 +121,7 @@ export default class GameTitle extends Phaser.State {
   }
 
   onClick() {
-    this.state.start('L1S1')
+    this.state.start('L2S3')
     if (!this.creditsControll) {
       this.game.add.tween(this.gameTitleBG).to({ alpha: 0 }, 500, "Linear", true)
       this.game.add.tween(this.gameTitleStart).to({ alpha: 0 }, 500, "Linear", true)

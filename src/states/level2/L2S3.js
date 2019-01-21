@@ -12,6 +12,7 @@ import Pool from '../../other/pool'
 import BombCounter from '../../other/inGameUi/bombCounter'
 
 import LevelF from '../LevelF'
+import GameTitle from '../GameTitle'
 
 export default class L2S3 extends Phaser.State {
   constructor() {
@@ -110,7 +111,7 @@ export default class L2S3 extends Phaser.State {
     // PLAYER
     this.player = new Player(this.game, this.commands)
     this.game.add.existing(this.player)
-    this.player.spawn(83*32, 9*32)
+    this.player.spawn(8*32,24*32)
 
     /******* BIBLES *******/
     this.biblePool = new Pool(game, Bible, 2, true, 'Bibles');
@@ -144,6 +145,19 @@ export default class L2S3 extends Phaser.State {
     /******* DEVIL FINAL LEVEL *******/
     this.devilFinalLevel = this.game.add.sprite(96*32, 0*32, 'devilFinalLevel')
     this.devilFinalLevel.anchor.set(1, 0)
+
+    // FLASHBACK6
+    this.flashback6 = this.game.add.image(0, 0, 'flashback6')
+    this.flashback6.alpha = 0
+    this.flashback6.fixedToCamera = true
+    this.flashback6AnimIn = this.game.add.tween(this.flashback6).to({ alpha: 1 }, 500, "Linear", false)
+    this.flashback6AnimOut = this.game.add.tween(this.flashback6).to({ alpha: 0 }, 500, "Linear", false)
+    // FLASHBACK8
+    this.flashback8 = this.game.add.image(0, 0, 'flashback8')
+    this.flashback8.alpha = 0
+    this.flashback8.fixedToCamera = true
+    this.flashback8AnimIn = this.game.add.tween(this.flashback8).to({ alpha: 1 }, 500, "Linear", false)
+    this.flashback8AnimOut = this.game.add.tween(this.flashback8).to({ alpha: 0 }, 500, "Linear", false)
   }
 
   update() {
@@ -247,7 +261,7 @@ export default class L2S3 extends Phaser.State {
         this.game.physics.arcade.collide(this.map.customLayers[i], this.bomb)
       }
       if (i == 1) {
-        this.game.physics.arcade.collide(this.map.customLayers[i], this.player, this.collisionHandler(i))
+        this.game.physics.arcade.collide(this.map.customLayers[i], this.player, this.collisionHandlerLava(i))
       }
     }
 
@@ -275,8 +289,21 @@ export default class L2S3 extends Phaser.State {
       this.game.camera.shake(0.007, 300)
     }
     if (this.player.position.x > 93*32 && this.player.position.y > 2*32 && this.player.position.y < 6*32) {
-      this.camera.fade('#000000', Phaser.Timer.SECOND * 1.5)
-      this.camera.onFadeComplete.add(this.fadeComplete,this)
+      // this.camera.fade('#000000', Phaser.Timer.SECOND * 1.5)
+      // this.camera.onFadeComplete.add(this.fadeComplete,this)
+
+      this.game.time.events.add(Phaser.Timer.SECOND * 1.7, function(){
+        this.flashback6AnimIn.start()
+
+        this.game.time.events.add(Phaser.Timer.SECOND * 6, function(){
+          this.flashback8AnimIn.start()
+  
+          this.game.time.events.add(Phaser.Timer.SECOND * 6, function(){
+            this.state.add('gameTitle', GameTitle)
+            this.state.start('gameTitle')
+          }, this)
+        }, this)
+      }, this)
     }
   }
 
@@ -303,9 +330,15 @@ export default class L2S3 extends Phaser.State {
     }
   }
 
+  collisionHandlerLava(index) {
+    return function (sprite, layer) {
+      sprite.death()
+    }
+  }
+
   collisionHandlerGun(index) {
     return function (bullet, layer) {
-      layer.exists = false
+      bullet.exists = false
     }
   }
 }

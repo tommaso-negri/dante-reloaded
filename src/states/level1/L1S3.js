@@ -72,13 +72,6 @@ export default class L1S3 extends Phaser.State {
       this.map.customLayers[i-1] = layer
     }
 
-    /******* FLASHBACKS *******/
-    // FLASHBACK4
-    this.flashback4 = this.game.add.image(0, 0, 'flashback4')
-    this.flashback4.alpha = 0
-    this.flashback4.fixedToCamera = true
-    this.flashback4AnimIn = this.game.add.tween(this.flashback4).to({ alpha: 1 }, 500, "Linear", false, Phaser.Timer.SECOND * 0.8)
-
     /******* STAIRS *******/
     this.stairsPool = new Pool(this.game, Stairs, 3, true, 'Stairs')
     this.stairsPool.create(7*32, -2*32)
@@ -125,6 +118,13 @@ export default class L1S3 extends Phaser.State {
     /******* GAME UI *******/
     this.bombUI = new BombCounter(this.game)
     this.game.add.existing(this.bombUI);
+
+    /******* FLASHBACKS *******/
+    // FLASHBACK4
+    this.flashback4 = this.game.add.image(0, 0, 'flashback4')
+    this.flashback4.alpha = 0
+    this.flashback4.fixedToCamera = true
+    this.flashback4AnimIn = this.game.add.tween(this.flashback4).to({ alpha: 1 }, 500, "Linear", false, Phaser.Timer.SECOND * 0.8)
   }
 
   update() {
@@ -219,7 +219,10 @@ export default class L1S3 extends Phaser.State {
         this.game.physics.arcade.collide(this.map.customLayers[i], this.bomb)
       }
       if (i == 1) {
-        this.game.physics.arcade.collide(this.map.customLayers[i], this.player, this.collisionHandler(i))
+        this.game.physics.arcade.collide(this.map.customLayers[i], this.player, this.collisionHandlerWater(i))
+      }
+      if (i == 2) {
+        this.game.physics.arcade.collide(this.map.customLayers[i], this.player, this.collisionHandlerSpikes(i))
       }
     }
 
@@ -268,9 +271,21 @@ export default class L1S3 extends Phaser.State {
     }
   }
 
+  collisionHandlerWater(index) {
+    return function (sprite, layer) {
+      sprite.death()
+    }
+  }
+
+  collisionHandlerSpikes(index) {
+    return function (sprite, layer) {
+      sprite.death()
+    }
+  }
+
   collisionHandlerGun(index) {
     return function (bullet, layer) {
-      layer.exists = false
+      bullet.exists = false
     }
   }
 }

@@ -237,7 +237,7 @@ export default class L2S2 extends Phaser.State {
         this.game.physics.arcade.collide(this.map.customLayers[i], this.bomb)
       }
       if (i == 1) {
-        this.game.physics.arcade.collide(this.map.customLayers[i], this.player, this.collisionHandler(i))
+        this.game.physics.arcade.collide(this.map.customLayers[i], this.player, this.collisionHandlerLava(i))
       }
     }
 
@@ -276,9 +276,15 @@ export default class L2S2 extends Phaser.State {
     }
   }
 
+  collisionHandlerLava(index) {
+    return function (sprite, layer) {
+      sprite.death()
+    }
+  }
+
   collisionHandlerGun(index) {
     return function (bullet, layer) {
-      layer.exists = false
+      bullet.exists = false
     }
   }
 

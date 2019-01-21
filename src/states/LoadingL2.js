@@ -35,13 +35,22 @@ export default class LoadingL2 extends Phaser.State {
     this.game.load.image('l2s3BG_2', 'assets/images/BGs/level2/scene3/l2s3BG_2.png')
     this.game.load.image('l2s3BG_3', 'assets/images/BGs/level2/scene3/l2s3BG_3.png')
 
+    /******* ASSETS - DIALOGS *******/
+    this.game.load.image('dia_2.1', 'assets/images/dialogs/dia_2.1.png')
+    this.game.load.image('dia_2.2', 'assets/images/dialogs/dia_2.2.png')
+    this.game.load.image('dia_2.3', 'assets/images/dialogs/dia_2.3.png')
+    this.game.load.image('dia_2.4', 'assets/images/dialogs/dia_2.4.png')
+
     /******* OTHER *******/
     this.game.load.image('devilFinalLevel', 'assets/sprites/devilFinalLevel.png')
+    this.game.load.image('lucifero', 'assets/sprites/lucifero.png')
   }
 
   create() {
     /******* STATE - L2S1 *******/
-    this.state.add('L2S1', L2S1)
-    this.state.start('L2S1')
+    this.game.time.events.add(Phaser.Timer.SECOND * 6, function(){
+      this.state.add('L2S1', L2S1)
+      this.state.start('L2S1')
+    }, this)
   }
 }

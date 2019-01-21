@@ -1,3 +1,6 @@
+import L1S1 from '../states/level1/L1S1'
+import GameTitle from '../states/GameTitle';
+
 export default class Player extends Phaser.Sprite {
   constructor(game, commands) {
     super(game, 0, 0, 'player');
@@ -7,10 +10,10 @@ export default class Player extends Phaser.Sprite {
     this.positionControll = 'right'
 
     this.vulnerabilities = {
-      ghost: 0.3,
-      skull: 1.2,
-      devil: 5,
-      gravity: 10
+      ghost: 10,
+      skull: 20,
+      devil: 30,
+      gravity: 50
     };
 
     this.settings = {
@@ -113,7 +116,16 @@ export default class Player extends Phaser.Sprite {
   death() {
     this.exists = false;
     this.game.camera.follow(null);
+    
+    this.game.time.events.add(Phaser.Timer.SECOND * 0.8, function(){
+      this.imageFinal = this.game.add.image(0, 0, 'flashback7')
+      this.imageFinal.fixedToCamera = true
 
+      this.game.time.events.add(Phaser.Timer.SECOND * 3, function(){
+        this.game.state.add('gameTitle', GameTitle)
+        this.game.state.start('gameTitle')
+      }, this)
+    }, this)
     // setTimeout(function(){
     //   this.reset(this.settings.spawnX, this.settings.spawnY);
     //   this.exists = true;
