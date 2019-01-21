@@ -4,7 +4,7 @@ export default class BombCounter extends Phaser.Sprite {
     this.exists = true;
     this.scale.set(0.7, 0.7)
 
-    this.numBombs = 0;
+    this.numBombs = localStorage.getItem('numBombs')
 
     this.fixedToCamera = true;
 

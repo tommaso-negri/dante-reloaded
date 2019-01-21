@@ -17,11 +17,26 @@ export default class GameTitle extends Phaser.State {
   }
 
   create() {
+    this.creditsControll = false
+    localStorage.setItem('numBombs', `${0}`)
+
     /******* GAME TITLE BG *******/
     this.gameTitleBG = this.game.add.image(0, 0, 'gameTitleBG')
     this.gameTitleBG.width = this.game.width
     this.gameTitleBG.height = this.game.height
     this.gameTitleBG.alpha = 0
+
+    this.gameTitleStart = this.game.add.image(0, 0, 'gameTitleStart')
+    this.gameTitleStart.position.x = 520
+    this.gameTitleStart.position.y = 20
+    this.gameTitleStart.alpha = 0
+
+    this.gameTitleCredits = this.game.add.image(0, 0, 'gameTitleCredits')
+    this.gameTitleCredits.position.x = 10
+    this.gameTitleCredits.position.y = 15
+    this.gameTitleCredits.scale.set(0.6, 0.6)
+    this.gameTitleCredits.inputEnabled = true
+    this.gameTitleCredits.alpha = 0
 
 
     this.charactersImage = this.game.add.image(0, 0, 'characters')
@@ -29,6 +44,12 @@ export default class GameTitle extends Phaser.State {
 
     this.commandsImage = this.game.add.image(0, 0, 'commands')
     this.commandsImage.alpha = 0
+    
+    this.creditsImage = this.game.add.image(0, 0, 'credits')
+    this.creditsImage.alpha = 0
+    this.backButton = this.game.add.image(200, 650, 'back')
+    this.backButton.alpha = 0
+    this.backButton.inputEnabled = true
 
     /******* NOTICE *******/
     this.textStyle = { font: "20px Helvetica", fill: "#ffffff", align: "center",  }
@@ -38,6 +59,8 @@ export default class GameTitle extends Phaser.State {
     this.notice.alpha = 0
 
     this.game.add.tween(this.gameTitleBG).to({ alpha: 1 }, 2000, "Linear", true, Phaser.Timer.SECOND * 1)
+    this.game.add.tween(this.gameTitleStart).to({ alpha: 1 }, 2000, "Linear", true, Phaser.Timer.SECOND * 1)
+    this.game.add.tween(this.gameTitleCredits).to({ alpha: 1 }, 2000, "Linear", true, Phaser.Timer.SECOND * 1)
     
     this.game.time.events.add(Phaser.Timer.SECOND * 3, function(){
       this.test = this.game.add.tween(this.notice).to({ alpha: 1 }, 700, "Linear", true, 0, -1)
@@ -49,6 +72,11 @@ export default class GameTitle extends Phaser.State {
 
     this.commandsImageAnimIn = this.game.add.tween(this.commandsImage).to({ alpha: 1 }, 500, "Linear", false, Phaser.Timer.SECOND * 0.4)
     this.commandsImageAnimOut = this.game.add.tween(this.commandsImage).to({ alpha: 0 }, 300, "Linear", false)
+    
+    this.creditsImageAnimIn = this.game.add.tween(this.creditsImage).to({ alpha: 1 }, 500, "Linear", false, Phaser.Timer.SECOND * 0.4)
+    this.creditsImageAnimOut = this.game.add.tween(this.creditsImage).to({ alpha: 0 }, 300, "Linear", false)
+    this.backButtonImageAnimIn = this.game.add.tween(this.backButton).to({ alpha: 1 }, 500, "Linear", false, Phaser.Timer.SECOND * 0.4)
+    this.backButtonImageAnimOut = this.game.add.tween(this.backButton).to({ alpha: 0 }, 300, "Linear", false)
 
     this.game.input.onTap.add(this.onClick, this)
 
@@ -70,43 +98,69 @@ export default class GameTitle extends Phaser.State {
     this.flashback3AnimOut = this.game.add.tween(this.flashback3).to({ alpha: 0 }, 500, "Linear", false)
   }
 
+  update() {
+    if (this.gameTitleCredits.input.pointerOver()) {
+      this.gameTitleCredits.loadTexture('gameTitleCreditsOver')
+      // this.creditsControll = true
+    } else {
+      this.gameTitleCredits.loadTexture('gameTitleCredits')
+      // this.creditsControll = false
+    }
+    if (this.gameTitleCredits.input.pointerDown()) {
+      this.creditsImageAnimIn.start()
+      this.backButtonImageAnimIn.start()
+      this.creditsControll = true
+    }
+    if (this.backButton.input.pointerDown()) {
+      this.creditsImageAnimOut.start()
+      this.backButtonImageAnimOut.start()
+      this.game.time.events.add(Phaser.Timer.SECOND * 0.1, function(){
+        this.creditsControll = false
+      }, this)
+    }
+  }
+
   onClick() {
     this.state.start('L1S1')
-    this.game.add.tween(this.gameTitleBG).to({ alpha: 0 }, 500, "Linear", true)
-    this.notice.destroy()
-    this.charactersImageAnimIn.start()
-
-    this.game.time.events.add(Phaser.Timer.SECOND * 3, function(){
-      this.charactersImageAnimOut.start()
-      this.commandsImageAnimIn.start()
+    if (!this.creditsControll) {
+      this.game.add.tween(this.gameTitleBG).to({ alpha: 0 }, 500, "Linear", true)
+      this.game.add.tween(this.gameTitleStart).to({ alpha: 0 }, 500, "Linear", true)
+      this.game.add.tween(this.gameTitleCredits).to({ alpha: 0 }, 500, "Linear", true)
+      this.notice.destroy()
+      this.charactersImageAnimIn.start()
 
       this.game.time.events.add(Phaser.Timer.SECOND * 3, function(){
-        this.commandsImageAnimOut.start()
+        this.charactersImageAnimOut.start()
+        this.commandsImageAnimIn.start()
 
         this.game.time.events.add(Phaser.Timer.SECOND * 3, function(){
           this.commandsImageAnimOut.start()
-          this.flashback1AnimIn.start()
 
           this.game.time.events.add(Phaser.Timer.SECOND * 3, function(){
-            this.flashback1AnimOut.start()
-            this.flashback2AnimIn.start()
+            this.commandsImageAnimOut.start()
+            this.flashback1AnimIn.start()
 
             this.game.time.events.add(Phaser.Timer.SECOND * 3, function(){
-              this.flashback2AnimOut.start()
-              this.flashback3AnimIn.start()
+              this.flashback1AnimOut.start()
+              this.flashback2AnimIn.start()
 
               this.game.time.events.add(Phaser.Timer.SECOND * 3, function(){
-                this.flashback3AnimOut.start()
+                this.flashback2AnimOut.start()
+                this.flashback3AnimIn.start()
 
-                this.game.time.events.add(Phaser.Timer.SECOND * 0.3, function(){
-                  this.state.start('L1S1')
+                this.game.time.events.add(Phaser.Timer.SECOND * 3, function(){
+                  this.flashback3AnimOut.start()
+
+                  this.game.time.events.add(Phaser.Timer.SECOND * 0.3, function(){
+                    this.state.start('L1S1')
+                  }, this)
                 }, this)
               }, this)
             }, this)
           }, this)
         }, this)
       }, this)
-    }, this)
+    }
   }
 
   shutdown() {

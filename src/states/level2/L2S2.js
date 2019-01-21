@@ -24,7 +24,7 @@ export default class L2S2 extends Phaser.State {
       x: 0,
       y: 0
     }
-    this.numBombs = 0
+    this.numBombs = localStorage.getItem('numBombs')
     this.bombDropping = false
 
     /******* SFX *******/
@@ -171,6 +171,7 @@ export default class L2S2 extends Phaser.State {
 
       if (this.numBombs < 3) {
         this.numBombs++
+        localStorage.setItem('numBombs', `${this.numBombs}`)
         bible.hit();
         this.sfxBombCollection.play()
       }
@@ -192,6 +193,7 @@ export default class L2S2 extends Phaser.State {
     }
     if (this.numBombs > 0 && this.bombDropping && this.inputReleased(Phaser.Keyboard.DOWN)) {
       this.numBombs -= 1;
+      localStorage.setItem('numBombs', `${this.numBombs}`)
       this.bombUI.dataGatering(this.numBombs);
       this.bombDropping = false;
       this.bomb.fire(this.player, {direction: 0});

@@ -38,7 +38,7 @@ export default class Preload extends Phaser.State {
     this.game.load.spritesheet('player', 'assets/sprites/player.png', 40, 54.98)
 
     /******* ASSETS - ENEMIES *******/
-    this.game.load.spritesheet('ghost', 'assets/sprites/ghost.png', 39, 80)
+    this.game.load.spritesheet('ghost', 'assets/sprites/ghost.png', 42, 80)
     this.game.load.spritesheet('skull', 'assets/sprites/skull.png', 36, 70)
     this.game.load.spritesheet('devil', 'assets/sprites/devil.png', 36, 70.1)
 
@@ -80,7 +80,11 @@ export default class Preload extends Phaser.State {
     this.game.load.audio('hellBackground', 'assets/audio/sfx/hellBackground.mp3')
 
     /******* ASSETS - GAME TITLE *******/
-    this.game.load.image('gameTitleBG', 'assets/images/GameTitle.jpeg')
+    this.game.load.image('gameTitleBG', 'assets/sprites/ui/gameTitleBG.png')
+    this.game.load.image('gameTitleStart', 'assets/sprites/ui/gameTitleStart.png')
+    this.game.load.image('gameTitleCredits', 'assets/sprites/ui/gameTitleCredits.png')
+    this.game.load.image('gameTitleCreditsOver', 'assets/sprites/ui/gameTitleCreditsOver.png')
+    this.game.load.image('back', 'assets/sprites/ui/back.png')
 
     /******* ASSETS - DIALOGS *******/
     this.game.load.image('dia_1.1', 'assets/images/dialogs/dia_1.1.png')
