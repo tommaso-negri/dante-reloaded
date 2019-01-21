@@ -4,6 +4,8 @@ import L1S3 from './level1/L1S3'
 import L2S1 from './level2/L2S1'
 import L2S2 from './level2/L2S2'
 import L2S3 from './level2/L2S3'
+import LevelF from './LevelF'
+import LoadingL2 from './LoadingL2'
 
 export default class GameTitle extends Phaser.State {
   constructor() {
@@ -52,7 +54,7 @@ export default class GameTitle extends Phaser.State {
   }
 
   onClick() {
-    this.state.start('L1S1')
+    // this.state.start('L1S1')
     this.game.add.tween(this.gameTitleBG).to({ alpha: 0 }, 500, "Linear", true)
     this.notice.destroy()
     this.charactersImageAnimIn.start()

@@ -6,6 +6,10 @@ import Bomb from '../../other/weapons/bomb'
 import Ghost from '../../other/enemies/ghost'
 import Soul from '../../other/enemies/soul'
 import Bible from '../../other/bible'
+import Stairs from '../../other/stairs'
+import Pool from '../../other/pool'
+
+import L2S3 from './L2S3'
 
 export default class L2S2 extends Phaser.State {
   constructor() {
@@ -57,6 +61,35 @@ export default class L2S2 extends Phaser.State {
       this.map.customLayers[i-1] = layer
     }
 
+    /******* STAIRS *******/
+    this.stairsPool = new Pool(this.game, Stairs, 3, true, 'Stairs')
+    this.stairsPool.create(88*32, 22*32)
+    this.stairsPool.create(88*32, 26*32)
+    this.stairsPool.create(7*32, -1*32)
+    this.stairsPool.create(7*32, -5*32)
+
+    this.safeBarrier1 = this.game.add.sprite(87*32, 28*32)
+    this.game.physics.arcade.enable(this.safeBarrier1)
+    this.safeBarrier1.body.allowGravity = false
+    this.safeBarrier1.body.immovable = true
+    this.safeBarrier1.width = 4*32
+    this.safeBarrier1.height = 1*32
+
+    this.safeBarrier2 = this.game.add.sprite(85*32, 24*32)
+    this.game.physics.arcade.enable(this.safeBarrier2)
+    this.safeBarrier2.body.allowGravity = false
+    this.safeBarrier2.body.immovable = true
+    this.safeBarrier2.width = 1*32
+    this.safeBarrier2.height = 4*32
+
+    this.safeBarrier3 = this.game.add.sprite(90*32, 24*32)
+    this.game.physics.arcade.enable(this.safeBarrier3)
+    this.safeBarrier3.body.allowGravity = false
+    this.safeBarrier3.body.immovable = true
+    this.safeBarrier3.width = 1*32
+    this.safeBarrier3.height = 4*32
+
+
     /******* PLAYER *******/
     // PLAYER COMMANDS
     this.commands = {
@@ -74,7 +107,7 @@ export default class L2S2 extends Phaser.State {
     // PLAYER
     this.player = new Player(this.game, this.commands)
     this.game.add.existing(this.player)
-    this.player.spawn(4*32, 17*32)
+    this.player.spawn(87*32 + 30, 25*32)
   }
 
   update() {
@@ -105,6 +138,21 @@ export default class L2S2 extends Phaser.State {
       if (i == 1) {
         this.game.physics.arcade.collide(this.map.customLayers[i], this.player, this.collisionHandler(i))
       }
+    }
+
+    /******* STAIRS *******/
+    this.player.settings.onTheStairs = false
+    this.game.physics.arcade.overlap(this.player, this.stairsPool, function(player, stairs){
+      player.settings.onTheStairs = true
+    })
+    this.game.physics.arcade.collide(this.player, this.safeBarrier1)
+    this.game.physics.arcade.collide(this.player, this.safeBarrier2)
+    this.game.physics.arcade.collide(this.player, this.safeBarrier3)
+
+    /******* NEXT LEVEL *******/
+    if (this.player.position.x < 10*32 && this.player.position.x > 5*32 && this.player.position.y < -1*32) {
+      this.state.add('L2S3', L2S3)
+      this.state.start('L2S3')
     }
 
   }

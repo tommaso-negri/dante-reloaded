@@ -133,8 +133,9 @@ export default class L1S1 extends Phaser.State {
     }
 
     /******* STAIRS *******/
+    this.player.settings.onTheStairs = false
     this.game.physics.arcade.overlap(this.player, this.stairsPool, function(player, stairs){
-      player.onStairs()
+      player.settings.onTheStairs = true
     })
 
     /******* NEXT LEVEL *******/

@@ -6,6 +6,10 @@ import Bomb from '../../other/weapons/bomb'
 import Ghost from '../../other/enemies/ghost'
 import Soul from '../../other/enemies/soul'
 import Bible from '../../other/bible'
+import Stairs from '../../other/stairs'
+import Pool from '../../other/pool'
+
+import L2S2 from './L2S2'
 
 export default class L2S1 extends Phaser.State {
   constructor() {
@@ -63,6 +67,11 @@ export default class L2S1 extends Phaser.State {
       this.map.customLayers[i-1] = layer
     }
 
+    /******* STAIRS *******/
+    this.stairsPool = new Pool(this.game, Stairs, 3, true, 'Stairs')
+    this.stairsPool.create(88*32, -1*32)
+    this.stairsPool.create(88*32, -5*32)
+
     /******* PLAYER *******/
     // PLAYER COMMANDS
     this.commands = {
@@ -80,7 +89,8 @@ export default class L2S1 extends Phaser.State {
     // PLAYER
     this.player = new Player(this.game, this.commands)
     this.game.add.existing(this.player)
-    this.player.spawn(5*32, 4*32)
+    this.player.spawn(6*32 + 12, 6*32 - 27.49)
+    this.player.positionControll = 'left'
   }
 
   update() {
@@ -113,6 +123,18 @@ export default class L2S1 extends Phaser.State {
       if (i == 1) {
         this.game.physics.arcade.collide(this.map.customLayers[i], this.player, this.collisionHandler(i))
       }
+    }
+
+    /******* STAIRS *******/
+    this.player.settings.onTheStairs = false
+    this.game.physics.arcade.overlap(this.player, this.stairsPool, function(player, stairs){
+      player.settings.onTheStairs = true
+    })
+
+    /******* NEXT LEVEL *******/
+    if (this.player.position.x < 90*32 && this.player.position.x > 85*32 && this.player.position.y < -1*32) {
+      this.state.add('L2S2', L2S2)
+      this.state.start('L2S2')
     }
 
   }

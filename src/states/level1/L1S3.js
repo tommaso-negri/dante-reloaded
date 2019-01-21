@@ -7,7 +7,9 @@ import Ghost from '../../other/enemies/ghost'
 import Soul from '../../other/enemies/soul'
 import Bible from '../../other/bible'
 import Stairs from '../../other/stairs'
-import Pool from '../../other/pool';
+import Pool from '../../other/pool'
+
+import LoadingL2 from '../LoadingL2'
 
 export default class L1S3 extends Phaser.State {
   constructor() {
@@ -131,14 +133,15 @@ export default class L1S3 extends Phaser.State {
     }
 
     /******* STAIRS *******/
+    this.player.settings.onTheStairs = false
     this.game.physics.arcade.overlap(this.player, this.stairsPool, function(player, stairs){
-      player.onStairs()
+      player.settings.onTheStairs = true
     })
 
     /******* NEXT LEVEL *******/
-    if (this.player.position.x < 10*32 && this.player.position.x > 5*32 && this.player.position.y > 24*32) {
-      this.state.add('L1S3', L1S3)
-      this.state.start('L1S3')
+    if (this.player.position.x > 88*32 && this.player.position.y < 23*32 && this.player.position.y > 19*32) {
+      this.state.add('LoadingL2', LoadingL2)
+      this.state.start('LoadingL2')
     }
 
   }

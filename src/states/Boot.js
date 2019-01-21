@@ -7,7 +7,7 @@ export default class Boot extends Phaser.State {
 
   preload() {
     /******* ASSETS - LOADING ANIMATION *******/
-    this.game.load.image('loading', 'assets/sprites/ui/loading.gif')
+    this.game.load.image('loading', 'assets/sprites/ui/loading.png')
   }
 
   create() {

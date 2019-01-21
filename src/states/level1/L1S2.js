@@ -104,7 +104,6 @@ export default class L1S2 extends Phaser.State {
     this.player = new Player(this.game, this.commands)
     this.game.add.existing(this.player)
     this.player.spawn(87*32, -2*32)
-    this.player.frame = 16
   }
 
   update() {
@@ -144,8 +143,9 @@ export default class L1S2 extends Phaser.State {
     }
 
     /******* STAIRS *******/
+    this.player.settings.onTheStairs = false
     this.game.physics.arcade.overlap(this.player, this.stairsPool, function(player, stairs){
-      player.onStairs()
+      player.settings.onTheStairs = true
     })
 
     /******* NEXT LEVEL *******/
@@ -154,6 +154,12 @@ export default class L1S2 extends Phaser.State {
       this.state.start('L1S3')
     }
 
+  }
+
+  render() {
+    this.game.debug.start(32, 32);
+    this.game.debug.line(`Health: ${this.player.health}/${this.player.maxHealth}`);
+    this.game.debug.line(`Velocity: ${this.player.body.velocity.y}`);
   }
 
   collisionHandler(index) {
