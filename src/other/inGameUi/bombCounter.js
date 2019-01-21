@@ -1,14 +1,12 @@
 export default class BombCounter extends Phaser.Sprite {
   constructor(game) {
-    super(game, 25, 25, 'contatore');
+    super(game, 25, 25, 'bombCounter');
     this.exists = true;
-    // this.anchor.setTo(0.5, 0.5);
+    this.scale.set(0.7, 0.7)
 
     this.numBombs = 0;
 
     this.fixedToCamera = true;
-    this.scale.x = 1/8;
-    this.scale.y = 1/8;
 
     this.animations.add('vuoto', [0], 10, true);
     this.animations.add('una', [1], 10, true);

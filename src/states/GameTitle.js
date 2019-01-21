@@ -51,10 +51,27 @@ export default class GameTitle extends Phaser.State {
     this.commandsImageAnimOut = this.game.add.tween(this.commandsImage).to({ alpha: 0 }, 300, "Linear", false)
 
     this.game.input.onTap.add(this.onClick, this)
+
+    /******* FLASHBACKS *******/
+    // FLASHBACK1
+    this.flashback1 = this.game.add.image(0, 0, 'flashback1')
+    this.flashback1.alpha = 0
+    this.flashback1AnimIn = this.game.add.tween(this.flashback1).to({ alpha: 1 }, 500, "Linear", false, Phaser.Timer.SECOND * 0.4)
+    this.flashback1AnimOut = this.game.add.tween(this.flashback1).to({ alpha: 0 }, 500, "Linear", false)
+    // FLASHBACK2
+    this.flashback2 = this.game.add.image(0, 0, 'flashback2')
+    this.flashback2.alpha = 0
+    this.flashback2AnimIn = this.game.add.tween(this.flashback2).to({ alpha: 1 }, 500, "Linear", false)
+    this.flashback2AnimOut = this.game.add.tween(this.flashback2).to({ alpha: 0 }, 500, "Linear", false)
+    // FLASHBACK3
+    this.flashback3 = this.game.add.image(0, 0, 'flashback3')
+    this.flashback3.alpha = 0
+    this.flashback3AnimIn = this.game.add.tween(this.flashback3).to({ alpha: 1 }, 500, "Linear", false)
+    this.flashback3AnimOut = this.game.add.tween(this.flashback3).to({ alpha: 0 }, 500, "Linear", false)
   }
 
   onClick() {
-    // this.state.start('L1S1')
+    this.state.start('L1S1')
     this.game.add.tween(this.gameTitleBG).to({ alpha: 0 }, 500, "Linear", true)
     this.notice.destroy()
     this.charactersImageAnimIn.start()
@@ -66,13 +83,29 @@ export default class GameTitle extends Phaser.State {
       this.game.time.events.add(Phaser.Timer.SECOND * 3, function(){
         this.commandsImageAnimOut.start()
 
-        this.game.time.events.add(Phaser.Timer.SECOND * 0.3, function(){
+        this.game.time.events.add(Phaser.Timer.SECOND * 3, function(){
           this.commandsImageAnimOut.start()
-          this.state.start('L1S1')
+          this.flashback1AnimIn.start()
+
+          this.game.time.events.add(Phaser.Timer.SECOND * 3, function(){
+            this.flashback1AnimOut.start()
+            this.flashback2AnimIn.start()
+
+            this.game.time.events.add(Phaser.Timer.SECOND * 3, function(){
+              this.flashback2AnimOut.start()
+              this.flashback3AnimIn.start()
+
+              this.game.time.events.add(Phaser.Timer.SECOND * 3, function(){
+                this.flashback3AnimOut.start()
+
+                this.game.time.events.add(Phaser.Timer.SECOND * 0.3, function(){
+                  this.state.start('L1S1')
+                }, this)
+              }, this)
+            }, this)
+          }, this)
         }, this)
-
       }, this)
-
     }, this)
   }
 

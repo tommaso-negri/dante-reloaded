@@ -4,6 +4,7 @@ export default class Bomb extends Phaser.Sprite {
 
     this.texture.baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
     this.anchor.set(0.5);
+    this.scale.set(0.1, 0.1)
 
     this.game.physics.enable(this);
     this.game.physics.arcade.gravity.y = 250;
@@ -28,7 +29,8 @@ export default class Bomb extends Phaser.Sprite {
     this.exists = true;
     this.reset(x, y);
     this.alpha = 1;
-    this.scale.set(1);
+    // this.scale.set(1);
+    this.scale.set(0.1, 0.1)
     this.exploded = false;
 
     this.game.physics.arcade.velocityFromAngle(angle, speed, this.body.velocity);

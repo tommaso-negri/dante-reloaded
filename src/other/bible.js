@@ -8,6 +8,8 @@ export default class Bible extends Phaser.Sprite {
     this.game.physics.arcade.gravity.y = 250;
     this.body.allowGravity = true;
     this.body.immovable = false;
+
+    this.scale.set(0.1, 0.1)
   }
 
   stdReset(x, y) {

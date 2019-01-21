@@ -8,7 +8,8 @@ export default class Player extends Phaser.Sprite {
 
     this.vulnerabilities = {
       ghost: 0.3,
-      soul: 1.2,
+      skull: 1.2,
+      devil: 5,
       gravity: 10
     };
 
@@ -80,8 +81,13 @@ export default class Player extends Phaser.Sprite {
       this.invincible = true;
     }
 
-    if (enemy.key == 'soul') {
-      this.health -= this.vulnerabilities.soul;
+    if (enemy.key == 'skull') {
+      this.health -= this.vulnerabilities.skull;
+      this.invincible = true;
+    }
+
+    if (enemy.key == 'devil') {
+      this.health -= this.vulnerabilities.devil;
       this.invincible = true;
     }
 

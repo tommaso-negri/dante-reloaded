@@ -1,9 +1,9 @@
 import Enemy from './enemy'
 import Player from '../player';
 
-export default class Soul extends Enemy {
+export default class Skull extends Enemy {
   constructor(game) {
-    super(game, 'soul')
+    super(game, 'skull')
     
     this.body.allowGravity = true;
     this.body.immovable = false;
@@ -18,8 +18,8 @@ export default class Soul extends Enemy {
       patrollR: 0
     }
 
-    this.height = 71;
-    this.width = 53;
+    this.animations.add('walkLeft', [19,18,17,16,15,14,13,12,11,15], 15, true)
+    this.animations.add('walkRight', [1,2,3,4,5,6,7,8,9,10], 15, true)
   }
 
   hit(bullet) {
@@ -54,9 +54,11 @@ export default class Soul extends Enemy {
   update() {
     if (this.x + (this.width/2) >= this.settings.patrollR) {
       this.body.velocity.x = -80;
+      this.animations.play('walkLeft')
     }
     if (this.x <= this.settings.patrollL + (this.width/2)) {
       this.body.velocity.x = 80;
+      this.animations.play('walkRight')
     }
     // this.body.velocity.x = Math.sin(this.game.time.now/500)*100+(player.x-this.x)*500;
     // this.body.velocity.y = Math.cos(this.game.time.now/1000)*100

@@ -4,10 +4,12 @@ import Weapon from '../../other/weapons/weapon'
 import Bullet from '../../other/weapons/bullet'
 import Bomb from '../../other/weapons/bomb'
 import Ghost from '../../other/enemies/ghost'
-import Soul from '../../other/enemies/soul'
+import Skull from '../../other/enemies/skull'
+import Devil from '../../other/enemies/devil'
 import Bible from '../../other/bible'
 import Stairs from '../../other/stairs'
 import Pool from '../../other/pool'
+import BombCounter from '../../other/inGameUi/bombCounter'
 
 import L2S3 from './L2S3'
 
@@ -16,16 +18,14 @@ export default class L2S2 extends Phaser.State {
     super('L2S2')
   }
 
-  preload() {
-
-  }
-
   create() {
     /******* VARIABLES *******/
     this.playerOldPos = {
       x: 0,
       y: 0
     }
+    this.numBombs = 0
+    this.bombDropping = false
 
     /******* SFX *******/
     this.sfxBombCollection = this.game.add.audio('bombCollection')
@@ -89,7 +89,6 @@ export default class L2S2 extends Phaser.State {
     this.safeBarrier3.width = 1*32
     this.safeBarrier3.height = 4*32
 
-
     /******* PLAYER *******/
     // PLAYER COMMANDS
     this.commands = {
@@ -108,6 +107,32 @@ export default class L2S2 extends Phaser.State {
     this.player = new Player(this.game, this.commands)
     this.game.add.existing(this.player)
     this.player.spawn(87*32 + 30, 25*32)
+
+    /******* BIBLES *******/
+    this.biblePool = new Pool(game, Bible, 2, true, 'Bibles');
+    this.biblePool.create(7*32, 15*32);
+    this.biblePool.create(10*32, 12*32);
+
+    /******* ENEMIES *******/
+    // SKULLS
+    this.skullPool = new Pool(this.game, Skull, 5, true, 'Skulls')
+    this.skullPool.create(2*32, 5*32, {patrollL: 2*32, patrollR: 7*32});
+    // GHOSTS
+    this.ghostPool = new Pool(this.game, Ghost, 5, true, 'Ghosts')
+    this.ghostPool.create(39*32, 2*32, {patrollL: 39*32, patrollR: 43*32});
+    // DEVIL
+    this.devilPool = new Pool(this.game, Devil, 5, true, 'Devils')
+    this.devilPool.create(2*32, 5*32, {patrollL: 2*32, patrollR: 6*32});
+
+    /******* WEAPONS *******/
+    // GUN
+    this.gun = new Weapon(game, Bullet, 64, false, {bulletSpeed: 500, fireRate: 270, bulletType: 'gun'}, 'Gun');
+    // BOMB
+    this.bomb = new Weapon(game, Bomb, 3, false, {bulletSpeed: 0, fireRate: 300, bulletType: 'bomb'}, 'Bomb');
+
+    /******* GAME UI *******/
+    this.bombUI = new BombCounter(this.game)
+    this.game.add.existing(this.bombUI);
   }
 
   update() {
@@ -130,10 +155,81 @@ export default class L2S2 extends Phaser.State {
       this.playerOldPos.y = this.player.body.y;
     }
 
+    /******* PLAYER HIT *******/
+    this.game.physics.arcade.overlap(this.player, this.skullPool, function(player, enemy){
+      player.hit(enemy);
+    })
+    this.game.physics.arcade.overlap(this.player, this.ghostPool, function(player, enemy){
+      player.hit(enemy);
+    })
+    this.game.physics.arcade.overlap(this.player, this.devilPool, function(player, enemy){
+      player.hit(enemy);
+    })
+
+    /******* DROPS *******/
+    this.game.physics.arcade.overlap(this.player, this.biblePool, function(player, bible) {
+
+      if (this.numBombs < 3) {
+        this.numBombs++
+        bible.hit();
+        this.sfxBombCollection.play()
+      }
+      this.bombUI.dataGatering(this.numBombs);
+    }.bind(this));
+
+    /******* GUN *******/
+    if (this.commands.controlsLeft.isDown) {
+      this.gun.fire(this.player, {direction: 180})
+    }
+
+    if(this.commands.controlsRight.isDown) {
+      this.gun.fire(this.player, {direction: 0})
+    }
+
+    /******* BOMBS DROPPING *******/
+    if (this.inputIsActive(Phaser.Keyboard.DOWN)) {
+      this.bombDropping = true;
+    }
+    if (this.numBombs > 0 && this.bombDropping && this.inputReleased(Phaser.Keyboard.DOWN)) {
+      this.numBombs -= 1;
+      this.bombUI.dataGatering(this.numBombs);
+      this.bombDropping = false;
+      this.bomb.fire(this.player, {direction: 0});
+    }
+
+    /******* ENEMIES HIT *******/
+    this.game.physics.arcade.overlap(this.gun, this.skullPool, function(bullet, enemy){
+      enemy.hit(bullet);
+      bullet.exists = false;
+    })
+    this.game.physics.arcade.overlap(this.gun, this.ghostPool, function(bullet, enemy){
+      enemy.hit(bullet);
+      bullet.exists = false;
+    })
+    this.game.physics.arcade.overlap(this.gun, this.devilPool, function(bullet, enemy){
+      enemy.hit(bullet);
+      bullet.exists = false;
+    })
+    this.game.physics.arcade.overlap(this.bomb, this.skullPool, function(bullet, enemy){
+      enemy.hit(bullet);
+    })
+    this.game.physics.arcade.overlap(this.bomb, this.ghostPool, function(bullet, enemy){
+      enemy.hit(bullet);
+    })
+    this.game.physics.arcade.overlap(this.bomb, this.devilPool, function(bullet, enemy){
+      enemy.hit(bullet);
+    })
+
     /******* TILEMAP CUSTOM LAYERS *******/
     for (let i=0; i<3; i++) {
       if (i == 0) {
         this.game.physics.arcade.collide(this.map.customLayers[i], this.player, this.collisionHandler(i))
+        this.game.physics.arcade.collide(this.map.customLayers[i], this.skullPool)
+        this.game.physics.arcade.collide(this.map.customLayers[i], this.ghostPool)
+        this.game.physics.arcade.collide(this.map.customLayers[i], this.devilPool)
+        this.game.physics.arcade.collide(this.map.customLayers[i], this.biblePool)
+        this.game.physics.arcade.collide(this.map.customLayers[i], this.gun, this.collisionHandlerGun(i))
+        this.game.physics.arcade.collide(this.map.customLayers[i], this.bomb)
       }
       if (i == 1) {
         this.game.physics.arcade.collide(this.map.customLayers[i], this.player, this.collisionHandler(i))
@@ -157,9 +253,28 @@ export default class L2S2 extends Phaser.State {
 
   }
 
+  inputIsActive(key) {
+    let isActive = false;
+    isActive = this.game.input.keyboard.downDuration(key);
+    return isActive;
+  };
+
+  inputReleased(key) {
+    let released = false;
+    released = this.game.input.keyboard.upDuration(key);
+    return released;
+  };
+
   collisionHandler(index) {
     return function (sprite, layer) {
       console.log(index)
     }
   }
+
+  collisionHandlerGun(index) {
+    return function (bullet, layer) {
+      layer.exists = false
+    }
+  }
+
 }

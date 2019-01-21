@@ -11,7 +11,7 @@ import Bullet from '../other/weapons/bullet'
 import Bomb from '../other/weapons/bomb'
 // ENEMIES
 import Ghost from '../other/enemies/ghost'
-import Soul from '../other/enemies/soul'
+import Soul from '../other/enemies/skull'
 // DROPS
 import Bible from '../other/bible'
 // UI
@@ -316,7 +316,6 @@ export default class Level1 extends Phaser.State {
     })
     
     
-    
     // ENEMY HIT
     this.game.physics.arcade.overlap(gun, soulPool, function(bullet, enemy){
       enemy.hit(bullet);
@@ -332,7 +331,6 @@ export default class Level1 extends Phaser.State {
     this.game.physics.arcade.overlap(bomb, ghostPool, function(bullet, enemy){
       enemy.hit(bullet);
     })
-
 
     // GUN
     if (commands.controlsLeft.isDown) {

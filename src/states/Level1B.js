@@ -10,7 +10,7 @@ import Bullet from '../other/weapons/bullet'
 import Bomb from '../other/weapons/bomb'
 // ENEMIES
 import Ghost from '../other/enemies/ghost'
-import Soul from '../other/enemies/soul'
+import Soul from '../other/enemies/skull'
 // DROPS
 import Bible from '../other/bible'
 // UI
