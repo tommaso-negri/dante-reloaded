@@ -99,39 +99,39 @@ export default class Preload extends Phaser.State {
 
 // DA RIMUOVERE ALLA FINE
 
-    /******* ASSETS - TILEMAPS *******/
-    // LEVEL2 SCENE1
-    this.game.load.tilemap('l2s1Map', 'assets/tilemaps/level2/scene1/l2s1Map.json', null, Phaser.Tilemap.TILED_JSON)
-    this.game.load.image('l2s1Tileset', 'assets/tilemaps/level2/scene1/l2s1Tileset.png')
-    // LEVEL2 SCENE2
-    this.game.load.tilemap('l2s2Map', 'assets/tilemaps/level2/scene2/l2s2Map.json', null, Phaser.Tilemap.TILED_JSON)
-    this.game.load.image('l2s2Tileset', 'assets/tilemaps/level2/scene2/l2s2Tileset.png')
-    // LEVEL2 SCENE3
-    this.game.load.tilemap('l2s3Map', 'assets/tilemaps/level2/scene3/l2s3Map.json', null, Phaser.Tilemap.TILED_JSON)
-    this.game.load.image('l2s3Tileset', 'assets/tilemaps/level2/scene3/l2s3Tileset.png')
+    // /******* ASSETS - TILEMAPS *******/
+    // // LEVEL2 SCENE1
+    // this.game.load.tilemap('l2s1Map', 'assets/tilemaps/level2/scene1/l2s1Map.json', null, Phaser.Tilemap.TILED_JSON)
+    // this.game.load.image('l2s1Tileset', 'assets/tilemaps/level2/scene1/l2s1Tileset.png')
+    // // LEVEL2 SCENE2
+    // this.game.load.tilemap('l2s2Map', 'assets/tilemaps/level2/scene2/l2s2Map.json', null, Phaser.Tilemap.TILED_JSON)
+    // this.game.load.image('l2s2Tileset', 'assets/tilemaps/level2/scene2/l2s2Tileset.png')
+    // // LEVEL2 SCENE3
+    // this.game.load.tilemap('l2s3Map', 'assets/tilemaps/level2/scene3/l2s3Map.json', null, Phaser.Tilemap.TILED_JSON)
+    // this.game.load.image('l2s3Tileset', 'assets/tilemaps/level2/scene3/l2s3Tileset.png')
 
-    /******* ASSETS - PARALLAX BGs *******/
-    // LEVEL2 SCENE1
-    this.game.load.image('l2s1BG_1', 'assets/images/BGs/level2/scene1/l2s1BG_1.png')
-    this.game.load.image('l2s1BG_2', 'assets/images/BGs/level2/scene1/l2s1BG_2.png')
-    this.game.load.image('l2s1BG_3', 'assets/images/BGs/level2/scene1/l2s1BG_3.png')
-    // LEVEL2 SCENE2
-    this.game.load.image('l2s2BG_1', 'assets/images/BGs/level2/scene2/l2s2BG_1.png')
-    this.game.load.image('l2s2BG_2', 'assets/images/BGs/level2/scene2/l2s2BG_2.png')
-    // LEVEL2 SCENE3
-    this.game.load.image('l2s3BG_1', 'assets/images/BGs/level2/scene3/l2s3BG_1.png')
-    this.game.load.image('l2s3BG_2', 'assets/images/BGs/level2/scene3/l2s3BG_2.png')
-    this.game.load.image('l2s3BG_3', 'assets/images/BGs/level2/scene3/l2s3BG_3.png')
+    // /******* ASSETS - PARALLAX BGs *******/
+    // // LEVEL2 SCENE1
+    // this.game.load.image('l2s1BG_1', 'assets/images/BGs/level2/scene1/l2s1BG_1.png')
+    // this.game.load.image('l2s1BG_2', 'assets/images/BGs/level2/scene1/l2s1BG_2.png')
+    // this.game.load.image('l2s1BG_3', 'assets/images/BGs/level2/scene1/l2s1BG_3.png')
+    // // LEVEL2 SCENE2
+    // this.game.load.image('l2s2BG_1', 'assets/images/BGs/level2/scene2/l2s2BG_1.png')
+    // this.game.load.image('l2s2BG_2', 'assets/images/BGs/level2/scene2/l2s2BG_2.png')
+    // // LEVEL2 SCENE3
+    // this.game.load.image('l2s3BG_1', 'assets/images/BGs/level2/scene3/l2s3BG_1.png')
+    // this.game.load.image('l2s3BG_2', 'assets/images/BGs/level2/scene3/l2s3BG_2.png')
+    // this.game.load.image('l2s3BG_3', 'assets/images/BGs/level2/scene3/l2s3BG_3.png')
 
-    /******* ASSETS - DIALOGS *******/
-    this.game.load.image('dia_2.1', 'assets/images/dialogs/dia_2.1.png')
-    this.game.load.image('dia_2.2', 'assets/images/dialogs/dia_2.2.png')
-    this.game.load.image('dia_2.3', 'assets/images/dialogs/dia_2.3.png')
-    this.game.load.image('dia_2.4', 'assets/images/dialogs/dia_2.4.png')
+    // /******* ASSETS - DIALOGS *******/
+    // this.game.load.image('dia_2.1', 'assets/images/dialogs/dia_2.1.png')
+    // this.game.load.image('dia_2.2', 'assets/images/dialogs/dia_2.2.png')
+    // this.game.load.image('dia_2.3', 'assets/images/dialogs/dia_2.3.png')
+    // this.game.load.image('dia_2.4', 'assets/images/dialogs/dia_2.4.png')
 
-    /******* OTHER *******/
-    this.game.load.image('devilFinalLevel', 'assets/sprites/devilFinalLevel.png')
-    this.game.load.image('lucifero', 'assets/sprites/lucifero.png')
+    // /******* OTHER *******/
+    // this.game.load.image('devilFinalLevel', 'assets/sprites/devilFinalLevel.png')
+    // this.game.load.image('lucifero', 'assets/sprites/lucifero.png')
   }
 
   create() {
