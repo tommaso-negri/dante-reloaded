@@ -299,6 +299,7 @@ export default class L2S3 extends Phaser.State {
           this.flashback8AnimIn.start()
   
           this.game.time.events.add(Phaser.Timer.SECOND * 6, function(){
+            this.sound.stopAll()
             this.state.add('gameTitle', GameTitle)
             this.state.start('gameTitle')
           }, this)

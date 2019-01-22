@@ -44,6 +44,8 @@ export default class LoadingL2 extends Phaser.State {
     /******* OTHER *******/
     this.game.load.image('devilFinalLevel', 'assets/sprites/devilFinalLevel.png')
     this.game.load.image('lucifero', 'assets/sprites/lucifero.png')
+    this.game.load.audio('bg_music_2', 'assets/audio/Divina Commedia Inferno.mp3')
+    this.game.load.audio('growl', 'assets/audio/sfx/hellBackground')
   }
 
   create() {

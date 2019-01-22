@@ -18,6 +18,7 @@ export default class L1S1 extends Phaser.State {
   }
 
   create() {
+    this.sound.volume = 1
     /******* VARIABLES *******/
     this.playerOldPos = {
       x: 0,

@@ -19,6 +19,8 @@ export default class L2S1 extends Phaser.State {
   }
 
   create() {
+    this.sound.add('bg_music_2', 1, true)
+    this.sound.play('bg_music_2', 0.15, true)
     /******* VARIABLES *******/
     this.playerOldPos = {
       x: 0,

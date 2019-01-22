@@ -249,6 +249,7 @@ export default class L1S3 extends Phaser.State {
   }
 
   fadeComplete() {
+    this.sound.stopAll()
     this.state.add('LoadingL2', LoadingL2)
     this.state.start('LoadingL2')
   }

@@ -96,6 +96,7 @@ export default class Preload extends Phaser.State {
     this.game.load.image('movente', 'assets/sprites/movingPlatform.png')
     this.game.load.image('testFlashback', 'assets/images/testFlashback.png')
     this.game.load.video('loadingVideo', 'assets/sprites/ui/loadingVideo.mp4')
+    this.game.load.audio('bg_music_1', 'assets/audio/Divina Commedia Purgatorio.mp3')
 
 // DA RIMUOVERE ALLA FINE
 

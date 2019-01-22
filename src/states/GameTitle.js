@@ -14,9 +14,12 @@ export default class GameTitle extends Phaser.State {
 
   preload() {
     this.state.add('L1S1', L1S1)
+    this.sound.add('bg_music_1', 1, true)
   }
 
   create() {
+    this.sound.play('bg_music_1', 0.15, true)
+    this.sound.volume = 0.5
     this.creditsControll = false
     localStorage.setItem('numBombs', `${0}`)
     localStorage.setItem('dialog1', 'false')
@@ -33,13 +36,19 @@ export default class GameTitle extends Phaser.State {
     this.gameTitleStart.position.y = 20
     this.gameTitleStart.alpha = 0
 
+    /******* NOTICE *******/
+    this.textStyle = { font: "20px Helvetica", fill: "#ffffff", align: "center",  }
+    this.notice = this.game.add.text(this.game.world.centerX, this.game.world.centerY + 295, "Fai click per avviare il gioco", this.textStyle)
+    this.notice.anchor.setTo(0.5, 0.5)
+    this.notice.smoothed = false
+    this.notice.alpha = 0
+
     this.gameTitleCredits = this.game.add.image(0, 0, 'gameTitleCredits')
     this.gameTitleCredits.position.x = 10
     this.gameTitleCredits.position.y = 15
     this.gameTitleCredits.scale.set(0.6, 0.6)
     this.gameTitleCredits.inputEnabled = true
     this.gameTitleCredits.alpha = 0
-
 
     this.charactersImage = this.game.add.image(0, 0, 'characters')
     this.charactersImage.alpha = 0
@@ -52,13 +61,6 @@ export default class GameTitle extends Phaser.State {
     this.backButton = this.game.add.image(200, 650, 'back')
     this.backButton.alpha = 0
     this.backButton.inputEnabled = true
-
-    /******* NOTICE *******/
-    this.textStyle = { font: "20px Helvetica", fill: "#ffffff", align: "center",  }
-    this.notice = this.game.add.text(this.game.world.centerX, this.game.world.centerY + 295, "Fai click per avviare il gioco", this.textStyle)
-    this.notice.anchor.setTo(0.5, 0.5)
-    this.notice.smoothed = false
-    this.notice.alpha = 0
 
     this.game.add.tween(this.gameTitleBG).to({ alpha: 1 }, 2000, "Linear", true, Phaser.Timer.SECOND * 1)
     this.game.add.tween(this.gameTitleStart).to({ alpha: 1 }, 2000, "Linear", true, Phaser.Timer.SECOND * 1)
@@ -102,7 +104,8 @@ export default class GameTitle extends Phaser.State {
 
   update() {
     if (this.gameTitleCredits.input.pointerOver()) {
-      this.gameTitleCredits.loadTexture('gameTitleCreditsOver')
+      // this.gameTitleCredits.loadTexture('gameTitleCreditsOver')
+      this.gameTitleCredits.loadTexture('gameTitleCredits')
       // this.creditsControll = true
     } else {
       this.gameTitleCredits.loadTexture('gameTitleCredits')
@@ -112,12 +115,14 @@ export default class GameTitle extends Phaser.State {
       this.creditsImageAnimIn.start()
       this.backButtonImageAnimIn.start()
       this.creditsControll = true
+      this.notice.alpha = 0
     }
     if (this.backButton.input.pointerDown()) {
       this.creditsImageAnimOut.start()
       this.backButtonImageAnimOut.start()
       this.game.time.events.add(Phaser.Timer.SECOND * 0.1, function(){
         this.creditsControll = false
+        this.notice.alpha = 1
       }, this)
     }
   }
@@ -125,6 +130,7 @@ export default class GameTitle extends Phaser.State {
   onClick() {
     // this.state.start('L2S3')
     if (!this.creditsControll) {
+      this.sound.volume = 1
       this.game.add.tween(this.gameTitleBG).to({ alpha: 0 }, 500, "Linear", true)
       this.game.add.tween(this.gameTitleStart).to({ alpha: 0 }, 500, "Linear", true)
       this.game.add.tween(this.gameTitleCredits).to({ alpha: 0 }, 500, "Linear", true)
